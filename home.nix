@@ -67,7 +67,14 @@
       enable = true;
       config.theme = "gruvbox-dark";
     };
-    starship.enable = true;
+    starship = {
+      enable = true;
+      settings = {
+        gcloud = {
+          disabled = true;
+        };
+      };
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
