@@ -48,7 +48,15 @@
       ngrok
     ];
 
-    sessionVariables.EDITOR = "nvim";
+    sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.npm-global/bin"
+    ];
+
+    sessionVariables = {
+      EDITOR = "nvim";
+      NPM_CONFIG_PREFIX = "$HOME/.npm-global";
+    };
     file.".config/ghostty/config".source = ./configs/ghostty/config;
     shell.enableZshIntegration = true;
   };
@@ -71,9 +79,6 @@
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
-      initContent = ''
-        export PATH="$HOME/.local/bin:$PATH"
-      '';
       shellAliases = {
         find = "fd";
         cat = "bat";
