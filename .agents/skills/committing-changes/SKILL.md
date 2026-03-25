@@ -17,7 +17,7 @@ Creates clean commits after confirming the repository is in a valid state.
 1. Inspect changed files with `git status --short` and `git diff --stat`.
 2. Run required validation for changed Nix files before committing.
 3. Stage only intended files with `git add <paths>`.
-4. Commit with a concise imperative message.
+4. Commit using Conventional Commits format: `type(scope): subject`.
 5. Confirm commit hash and summarize what was committed.
 
 ## Guardrails
@@ -25,3 +25,4 @@ Creates clean commits after confirming the repository is in a valid state.
 1. Do not amend existing commits unless explicitly requested.
 2. Do not include unrelated work in the commit.
 3. Do not use destructive git operations.
+4. Keep commit subjects concise, imperative, and lowercase (except proper nouns).
