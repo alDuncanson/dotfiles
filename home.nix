@@ -36,7 +36,10 @@
       google-cloud-sdk
       gws
       docker
-      goose-cli
+      # Work around goose-cli 1.23.2 failing to compile test targets on darwin.
+      (goose-cli.overrideAttrs (_: {
+        doCheck = false;
+      }))
       gh
       terraform
       bun
@@ -77,6 +80,12 @@
     };
     direnv = {
       enable = true;
+      # Work around direnv 2.37.1 build regression on darwin after flake update.
+      package = pkgs.direnv.overrideAttrs (old: {
+        env = (old.env or {}) // {
+          CGO_ENABLED = "1";
+        };
+      });
       nix-direnv.enable = true;
       config = {
         global.hide_env_diff = true;
