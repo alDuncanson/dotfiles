@@ -1,5 +1,5 @@
 {
-  description = "Environment flake";
+  description = "dotfiles";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -20,7 +20,22 @@
     home-manager,
     nvf,
     ...
-  }: {
+  }: let
+    supportedSystems = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
+    forEachSystem = nixpkgs.lib.genAttrs supportedSystems;
+    neovimFor = system:
+      (nvf.lib.neovimConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
+        modules = [
+          {
+            config = import ./modules/nvim.nix;
+          }
+        ];
+      }).neovim;
+  in {
     homeConfigurations = {
       al = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
@@ -36,5 +51,21 @@
         ];
       };
     };
+
+    packages = forEachSystem (system: {
+      default = neovimFor system;
+      neovim = neovimFor system;
+    });
+
+    apps = forEachSystem (system: {
+      default = {
+        type = "app";
+        program = "${neovimFor system}/bin/nvim";
+      };
+      neovim = {
+        type = "app";
+        program = "${neovimFor system}/bin/nvim";
+      };
+    });
   };
 }
