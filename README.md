@@ -1,16 +1,17 @@
-# Bespoke dev environment nix flake
+# dotfiles
 
-This [Nix flake](https://wiki.nixos.org/wiki/Flakes) configuration realizes my
-declarative, portable, bespoke dev environment.
-
-![my terminal](./assets/ghostty-screenshot.png)
+This repository contains my [Nix flake](https://wiki.nixos.org/wiki/Flakes)
+managed dotfiles and user environment.
 
 - Terminal emulator: [Ghostty](https://ghostty.org/)
-- Terminal multiplexer and session manager: [Zellij](https://zellij.dev/)
 - Text editor: [Neovim](https://neovim.io/)
 - Neovim configuration framework: [nvf](https://github.com/NotAShelf/nvf)
-- Themes: [Catppuccin](https://catppuccin.com/)
+- Theme: [Gruvbox](https://github.com/morhetz/gruvbox)
 - User environment configuration:
-  [Home manager](https://github.com/nix-community/home-manager)
+  [Home Manager](https://github.com/nix-community/home-manager)
 - Shell: [Zsh](https://www.zsh.org/)
 - Font: [MonoLisa](https://www.monolisa.dev/)
+
+The same Neovim config is also exposed as a standalone flake app, so you can
+run it directly with `nix run .` or from a remote machine with
+`nix run github:alDuncanson/dotfiles`.
