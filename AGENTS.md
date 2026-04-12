@@ -32,6 +32,16 @@ Run the exported Neovim app directly:
 
 `nix run .#neovim`
 
+Check which packages and apps the flake currently exports:
+
+`nix flake show --all-systems`
+
+Search nixpkgs for candidate package names during discovery:
+
+`nix search nixpkgs <name>`
+
+When validating a package for this repo, prefer the pinned flake package set over bare `nixpkgs` search results.
+
 ## Neovim And NVF
 
 Keep Neovim changes declarative under `programs.nvf.settings`.
@@ -43,6 +53,24 @@ After changing NVF or Neovim behavior, build the Home Manager config and, when u
 Example:
 
 `nix run .#neovim -- --headless '+qa!'`
+
+If you need to inspect the pinned NVF source from this flake, resolve its store path with:
+
+`nix eval --impure --raw --expr 'let flake = builtins.getFlake (toString ./.); in flake.inputs.nvf.outPath'`
+
+Then read files under that path to confirm option names or defaults.
+
+When enabling new NVF language modules, prefer checking the pinned NVF module files under `modules/plugins/languages/` rather than guessing option names.
+
+If an NVF change affects the exported `.#neovim` app, test both Home Manager and the standalone flake app. They share the top-level `pkgs` set from `flake.nix`.
+
+If a Neovim or NVF change pulls in unfree packages, allow them in the shared `pkgs` import in `flake.nix`, not only inside Home Manager modules, otherwise `nix run .#neovim` can fail even when Home Manager builds succeed.
+
+Useful headless smoke-test patterns:
+
+`nix run .#neovim -- --headless '+qa!'`
+
+`nix run .#neovim -- --headless '+lua print(require("yazi").config.yazi_floating_window_border)' '+qa!'`
 
 ## Maintenance
 
@@ -61,6 +89,34 @@ Expire old generations with:
 Collect garbage with:
 
 `nix-collect-garbage -d`
+
+After updating inputs, rerun config evaluation, Home Manager build, and a Neovim smoke test before committing.
+
+`nix eval .#homeConfigurations.al.activationPackage.drvPath`
+
+`nix run home-manager -- build --flake .#al`
+
+`nix run .#neovim -- --headless '+qa!'`
+
+## Debugging And Inspection
+
+To inspect effective generated program config after a switch, read the files under `~/.config`, for example:
+
+`cat ~/.config/bat/config`
+
+This is useful for confirming that Home Manager rendered the expected flags.
+
+To compare current PATH installations before replacing a manually installed CLI, use:
+
+`which -a <command>`
+
+To find likely non-Nix installs that may need cleanup after a migration, use:
+
+`find "$HOME/.local/bin" /opt/homebrew/bin /usr/local/bin -maxdepth 1 -name '<command>' 2>/dev/null`
+
+When removing old manual installs, preserve config and state directories unless the task explicitly asks to remove them too.
+
+This repo currently targets one user and one system only: `al` on `aarch64-darwin`.
 
 ## Commit Format
 
