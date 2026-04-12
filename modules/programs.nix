@@ -207,7 +207,16 @@
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
+      initContent = ''
+        vivid_theme="gruvbox-light"
+        if defaults read -g AppleInterfaceStyle >/dev/null 2>&1; then
+          vivid_theme="gruvbox-dark"
+        fi
+
+        export LS_COLORS="$(${pkgs.vivid}/bin/vivid generate "$vivid_theme")"
+      '';
       shellAliases = {
+        gl = "git log --graph --decorate --oneline";
         cat = "bat";
         ls = "eza --icons=always";
         lsl = "ls -l";
