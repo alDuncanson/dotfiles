@@ -69,18 +69,20 @@
       gitEmail = "alDuncanson@proton.me";
       profileModule = ./profiles/personal.nix;
     };
+    work = mkHome {
+      system = defaultSystem;
+      userName = "redacted";
+      homeDirectory = "/Users/redacted";
+      gitName = "Al Duncanson";
+      gitEmail = "you@example.com";
+      profileModule = ./profiles/work.nix;
+    };
   in {
     homeConfigurations = {
       al = personal;
       personal = personal;
-      work = mkHome {
-        system = defaultSystem;
-        userName = "redacted";
-        homeDirectory = "/Users/redacted";
-        gitName = "Al Duncanson";
-        gitEmail = "you@example.com";
-        profileModule = ./profiles/work.nix;
-      };
+      redacted = work;
+      work = work;
     };
 
     packages.${defaultSystem} = {
