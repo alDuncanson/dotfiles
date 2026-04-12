@@ -35,6 +35,13 @@
         local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
         local normal_float = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
         local win_separator = vim.api.nvim_get_hl(0, { name = "WinSeparator", link = false })
+        local yazi_border_fg = win_separator.fg or normal_float.fg or normal.fg
+
+        if vim.o.background == "dark" then
+          yazi_border_fg = 0xfbf1c7
+        else
+          yazi_border_fg = 0x076678
+        end
 
         vim.api.nvim_set_hl(0, "WhichKeyNormal", {
           fg = normal_float.fg or normal.fg,
@@ -50,8 +57,9 @@
           bold = true,
         })
         vim.api.nvim_set_hl(0, "YaziFloatBorder", {
-          fg = win_separator.fg or normal_float.fg or normal.fg,
+          fg = yazi_border_fg,
           bg = normal.bg,
+          bold = true,
         })
       end
 
@@ -97,6 +105,7 @@
         setupOpts = {
           open_for_directories = true;
           highlight_hovered_buffers_in_same_directory = false;
+          yazi_floating_window_border = "rounded";
         };
       };
     };
