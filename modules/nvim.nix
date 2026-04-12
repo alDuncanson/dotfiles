@@ -23,6 +23,7 @@ in {
         enable = true;
         lsp.servers = ["terraformls-hcl"];
       };
+      helm.enable = true;
       json.enable = true;
       markdown.enable = true;
       nix.enable = true;
