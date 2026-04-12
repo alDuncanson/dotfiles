@@ -6,7 +6,6 @@
     gotop
     sendme
     harper
-    amp-cli
     pi-coding-agent
     opencode
     gws
