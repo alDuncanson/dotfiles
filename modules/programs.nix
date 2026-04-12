@@ -33,6 +33,10 @@
         bench = "hyperfine";
       };
     };
+    zellij = {
+      enable = true;
+      enableZshIntegration = true;
+    };
     git = {
       enable = true;
       signing.format = null;
@@ -56,4 +60,27 @@
       settings = import ./nvim.nix;
     };
   };
+
+  home.file.".local/bin/zellij" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+
+      if defaults read -g AppleInterfaceStyle >/dev/null 2>&1; then
+        config="$HOME/.config/zellij/config-dark.kdl"
+      else
+        config="$HOME/.config/zellij/config-light.kdl"
+      fi
+
+      exec ${pkgs.zellij}/bin/zellij --config "$config" "$@"
+    '';
+  };
+
+  xdg.configFile."zellij/config-dark.kdl".text = ''
+    theme "gruvbox-dark"
+  '';
+
+  xdg.configFile."zellij/config-light.kdl".text = ''
+    theme "gruvbox-light"
+  '';
 }
