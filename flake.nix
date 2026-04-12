@@ -37,7 +37,6 @@
       gitName,
       gitEmail,
       profileModule,
-      extraModules ? [],
     }: let
       pkgs = mkPkgs system;
     in
@@ -46,13 +45,11 @@
         extraSpecialArgs = {
           inherit gitEmail gitName homeDirectory userName;
         };
-        modules =
-          [
-            nvf.homeManagerModules.default
-            ./home.nix
-            profileModule
-          ]
-          ++ extraModules;
+        modules = [
+          nvf.homeManagerModules.default
+          ./home.nix
+          profileModule
+        ];
       };
     personal = mkHome {
       system = defaultSystem;
@@ -86,8 +83,6 @@
             ];
           }).neovim;
       in {
-        _module.args.pkgs = pkgs;
-
         packages = {
           default = neovim;
           inherit neovim;
