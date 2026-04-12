@@ -1,37 +1,91 @@
-# Repository Agent Guide
+# Home Manager Repo Guide
 
-## Purpose
+## What This Repo Manages
 
-This repository manages a macOS Home Manager environment using a Nix flake.
+This repository is a single-user macOS Home Manager configuration for `al` on `aarch64-darwin`.
 
-## Source Of Truth
+`home.nix` is the top-level Home Manager module.
 
-1. `home.nix` is the main Home Manager module for packages, shell setup, and editor config.
-2. `flake.nix` defines inputs and `homeConfigurations.al`.
-3. `flake.lock` pins exact input revisions.
+`flake.nix` defines the flake inputs, `homeConfigurations.al`, and the exported Neovim package/app.
 
-## Home Manager Operations
+`modules/` contains the actual Home Manager and NVF configuration split by concern.
 
-1. Evaluate config: `nix eval .#homeConfigurations.al.activationPackage.drvPath`
-2. Build config without switching: `nix run home-manager -- build --flake .#al`
-3. Switch to new generation: `nix run home-manager -- switch --flake .#al`
-4. Update flake inputs: `nix flake update`
-5. Upgrade (update + switch): run update, then switch.
+## Core Commands
 
-## Environment Maintenance
+Evaluate the config before committing Nix changes:
 
-1. List generations: `nix run home-manager -- generations`
-2. Expire old generations (example): `nix run home-manager -- expire-generations "-14 days"`
-3. Collect garbage: `nix-collect-garbage -d`
+`nix eval .#homeConfigurations.al.activationPackage.drvPath`
 
-## Neovim With NVF
+Build without switching:
 
-1. `programs.nvf` in `home.nix` is the canonical Neovim configuration.
-2. Add plugins, language support, LSP behavior, and UI options through `programs.nvf.settings`.
-3. Keep NVF changes declarative in Nix rather than ad-hoc runtime config files.
+`nix run home-manager -- build --flake .#al`
 
-## Change Expectations
+Apply the configuration:
 
-1. Prefer minimal, targeted edits.
-2. After changing Nix files, run at least config evaluation before committing.
-3. Do not add task-runner wrappers for core repo operations; use direct `nix` and Home Manager commands.
+`nix run home-manager -- switch --flake .#al`
+
+Inspect exported flake outputs when changing `flake.nix`:
+
+`nix flake show --all-systems`
+
+Run the exported Neovim app directly:
+
+`nix run .#neovim`
+
+## Neovim And NVF
+
+Keep Neovim changes declarative under `programs.nvf.settings`.
+
+`modules/nvim.nix` is the source of truth for plugin setup, colors, and Lua overrides.
+
+After changing NVF or Neovim behavior, build the Home Manager config and, when useful, smoke-test Neovim headlessly with the flake app.
+
+Example:
+
+`nix run .#neovim -- --headless '+qa!'`
+
+## Maintenance
+
+Update inputs with:
+
+`nix flake update`
+
+List generations with:
+
+`nix run home-manager -- generations`
+
+Expire old generations with:
+
+`nix run home-manager -- expire-generations "-14 days"`
+
+Collect garbage with:
+
+`nix-collect-garbage -d`
+
+## Commit Format
+
+Use conventional commits that match the existing history.
+
+Preferred format:
+
+`type(scope): short summary`
+
+Examples from this repo's style:
+
+`feat(nvim): flatten popup surfaces`
+
+`fix(programs): drop stale direnv override`
+
+`refactor(dotfiles): split home config into modules`
+
+`docs(agents): rewrite repository guide`
+
+Keep summaries imperative and concise.
+
+## Working Style
+
+Prefer minimal, targeted edits.
+
+Do not add wrapper scripts for standard Nix or Home Manager operations.
+
+When changing Nix files, run at least config evaluation before committing, and usually run a build as well.
