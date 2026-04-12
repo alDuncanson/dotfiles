@@ -31,7 +31,7 @@
         inherit pkgs;
         modules = [
           {
-            config = import ./modules/nvim.nix;
+            config = import ./modules/nvim.nix {inherit pkgs;};
           }
         ];
       }).neovim;

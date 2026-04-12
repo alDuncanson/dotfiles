@@ -1,4 +1,4 @@
-{
+{pkgs}: {
   vim = {
     binds.whichKey.enable = true;
     git.enable = true;
@@ -52,6 +52,19 @@
       name = "gruvbox";
       style = "dark";
       transparent = false;
+    };
+    extraPlugins.smear-cursor = {
+      package = pkgs.vimPlugins.smear-cursor-nvim;
+      setup = ''
+        require("smear_cursor").setup({
+          cursor_color = "none",
+          stiffness = 0.8,
+          trailing_stiffness = 0.7,
+          damping = 0.94,
+          distance_stop_animating = 0.3,
+          max_length = 12,
+        })
+      '';
     };
     luaConfigPost = ''
       local function apply_surface_overrides()
