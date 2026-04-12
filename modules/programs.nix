@@ -208,7 +208,6 @@
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = {
-        find = "fd";
         cat = "bat";
         ls = "eza --icons=always";
         lsl = "ls -l";
