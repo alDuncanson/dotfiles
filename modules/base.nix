@@ -25,11 +25,19 @@
       awscli2
       vscode-langservers-extracted
       uv
+      ruff
+      ty
       google-cloud-sdk
+      kubectl
       gws
       docker
+      podman
+      podman-compose
       gh
+      glab
       terraform
+      jq
+      yq
       bun
       rustup
       act
