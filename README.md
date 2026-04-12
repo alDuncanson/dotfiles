@@ -24,7 +24,8 @@ The flake currently exposes these Home Manager profiles:
 - `personal`
 - `work`
 
-`al` is kept as a compatibility alias for the personal profile on this machine.
+`al` and `sn93ib` are kept as per-user aliases, so `home-manager switch --flake .`
+resolves automatically on the personal and work machines.
 
 ## Bootstrap A New Work Machine
 
@@ -49,13 +50,15 @@ Then apply the work profile:
 
 ```bash
 cd ~/.config/home-manager
-nix run home-manager -- switch --flake .#work
+nix run home-manager -- switch --flake .
 ```
+
+`nix run home-manager -- switch --flake .#work` works too if you want to be explicit.
 
 After the first bootstrap, updates are just:
 
 ```bash
 cd ~/.config/home-manager
 git pull
-nix run home-manager -- switch --flake .#work
+nix run home-manager -- switch --flake .
 ```
