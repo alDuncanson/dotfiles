@@ -49,7 +49,6 @@
       NPM_CONFIG_PREFIX = "$HOME/.npm-global";
     };
 
-    file.".config/ghostty/config".source = ../configs/ghostty/config;
     shell.enableZshIntegration = true;
   };
 }

@@ -37,6 +37,16 @@
         email = "alDuncanson@proton.me";
       };
     };
+    ghostty = {
+      enable = true;
+      package = pkgs.ghostty-bin;
+      settings = {
+        font-family = "MonoLisa Custom";
+        confirm-close-surface = false;
+        quit-after-last-window-closed = true;
+        theme = "dark:Gruvbox Dark,light:Gruvbox Light";
+      };
+    };
     nvf = {
       enable = true;
       settings = import ./nvim.nix;
