@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
+      # Shared CLI and development tools used on both personal and work machines.
       htop
       eza
       fd
@@ -8,23 +9,24 @@
       wget
       hyperfine
       tree
-      asciinema
       lua
       go
-      fh
-      slides
-      gotop
       fastfetch
       ripgrep
       yazi
       glow
-      sendme
       biome
-      harper
-      amp-cli
-      pi-coding-agent
-      opencode
       nodejs
+      bun
+      rustup
+      gh
+      glab
+      jq
+      yq
+      just
+
+      # Shared Python, cloud, container, and infrastructure tooling.
+      python3
       awscli2
       vscode-langservers-extracted
       uv
@@ -32,22 +34,12 @@
       ty
       google-cloud-sdk
       kubectl
-      gws
+      kubernetes-helm
       docker
       podman
       podman-compose
-      gh
-      glab
       terraform
-      jq
-      yq
-      bun
-      rustup
       act
-      pandoc
-      tectonic
-      just
-      ngrok
     ];
 
     sessionPath = [
