@@ -21,6 +21,8 @@
       sendme
       biome
       harper
+      amp-cli
+      opencode
       nodejs
       awscli2
       vscode-langservers-extracted
