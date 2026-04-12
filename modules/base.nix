@@ -22,6 +22,7 @@
       biome
       harper
       amp-cli
+      pi-coding-agent
       opencode
       nodejs
       awscli2
