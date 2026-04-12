@@ -216,7 +216,12 @@
         export LS_COLORS="$(${pkgs.vivid}/bin/vivid generate "$vivid_theme")"
       '';
       shellAliases = {
+        ga = "git add";
+        gb = "git branch";
+        gc = "git commit";
+        gd = "git diff";
         gl = "git log --graph --decorate --oneline";
+        gs = "git status";
         cat = "bat";
         ls = "eza --icons=always";
         lsl = "ls -l";
