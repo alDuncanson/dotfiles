@@ -55,6 +55,11 @@ in {
     lsp = {
       enable = true;
       formatOnSave = true;
+      servers.nil.settings = {
+        nil = {
+          nix.flake.autoArchive = true;
+        };
+      };
       trouble.enable = true;
     };
     diagnostics = {
