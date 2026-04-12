@@ -3,7 +3,11 @@
     home-manager.enable = true;
     bat = {
       enable = true;
-      config.theme = "gruvbox-dark";
+      config = {
+        theme = "auto:system";
+        theme-dark = "gruvbox-dark";
+        theme-light = "gruvbox-light";
+      };
     };
     starship = {
       enable = true;
