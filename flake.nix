@@ -2,6 +2,8 @@
   description = "dotfiles";
 
   inputs = {
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     home-manager = {
@@ -15,7 +17,8 @@
     };
   };
 
-  outputs = {
+  outputs = inputs@{
+    flake-parts,
     nixpkgs,
     home-manager,
     nvf,
@@ -51,16 +54,6 @@
           ]
           ++ extraModules;
       };
-    pkgs = mkPkgs defaultSystem;
-    neovim =
-      (nvf.lib.neovimConfiguration {
-        inherit pkgs;
-        modules = [
-          {
-            config = import ./modules/nvim.nix {inherit pkgs;};
-          }
-        ];
-      }).neovim;
     personal = mkHome {
       system = defaultSystem;
       userName = "al";
@@ -77,28 +70,46 @@
       gitEmail = "al.duncanson@gfs.com";
       profileModule = ./profiles/work.nix;
     };
-  in {
-    homeConfigurations = {
-      al = personal;
-      personal = personal;
-      sn93ib = work;
-      work = work;
-    };
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [defaultSystem];
 
-    packages.${defaultSystem} = {
-      default = neovim;
-      inherit neovim;
-    };
+      perSystem = {system, ...}: let
+        pkgs = mkPkgs system;
+        neovim =
+          (nvf.lib.neovimConfiguration {
+            inherit pkgs;
+            modules = [
+              {
+                config = import ./modules/nvim.nix {inherit pkgs;};
+              }
+            ];
+          }).neovim;
+      in {
+        _module.args.pkgs = pkgs;
 
-    apps.${defaultSystem} = {
-      default = {
-        type = "app";
-        program = "${neovim}/bin/nvim";
+        packages = {
+          default = neovim;
+          inherit neovim;
+        };
+
+        apps = {
+          default = {
+            type = "app";
+            program = "${neovim}/bin/nvim";
+          };
+          neovim = {
+            type = "app";
+            program = "${neovim}/bin/nvim";
+          };
+        };
       };
-      neovim = {
-        type = "app";
-        program = "${neovim}/bin/nvim";
+
+      flake.homeConfigurations = {
+        al = personal;
+        personal = personal;
+        sn93ib = work;
+        work = work;
       };
     };
-  };
 }
