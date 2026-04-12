@@ -21,7 +21,6 @@
       bun
       rustup
       gh
-      glab
       jq
       yq
       just
