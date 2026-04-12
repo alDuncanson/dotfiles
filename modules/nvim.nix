@@ -1,4 +1,15 @@
-{pkgs}: {
+{pkgs}: let
+  accelerated-jk = pkgs.vimUtils.buildVimPlugin {
+    pname = "accelerated-jk.nvim";
+    version = "8fb5dad";
+    src = pkgs.fetchFromGitHub {
+      owner = "rainbowhxch";
+      repo = "accelerated-jk.nvim";
+      rev = "8fb5dad4ccc1811766cebf16b544038aeeb7806f";
+      sha256 = "03s8bw3as2d3agqvllaxicmlbp1pmabc4g2bwyh4whb50h4fm66f";
+    };
+  };
+in {
   vim = {
     binds.whichKey.enable = true;
     git.enable = true;
@@ -64,6 +75,17 @@
           distance_stop_animating = 0.3,
           max_length = 12,
         })
+      '';
+    };
+    extraPlugins.accelerated-jk = {
+      package = accelerated-jk;
+      setup = ''
+        require("accelerated-jk").setup({
+          acceleration_limit = 90,
+          acceleration_table = { 3, 5, 7, 10, 13, 16, 20, 24 },
+        })
+        vim.keymap.set("n", "j", "<Plug>(accelerated_jk_gj)", { remap = true, silent = true })
+        vim.keymap.set("n", "k", "<Plug>(accelerated_jk_gk)", { remap = true, silent = true })
       '';
     };
     luaConfigPost = ''
