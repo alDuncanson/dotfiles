@@ -22,7 +22,10 @@
     ...
   }: let
     system = "aarch64-darwin";
-    pkgs = nixpkgs.legacyPackages.${system};
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
     neovim =
       (nvf.lib.neovimConfiguration {
         inherit pkgs;
@@ -39,9 +42,6 @@
         modules = [
           nvf.homeManagerModules.default
           ./home.nix
-          {
-            nixpkgs.config.allowUnfree = true;
-          }
         ];
       };
     };
