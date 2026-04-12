@@ -2,27 +2,35 @@
 
 ## What This Repo Manages
 
-This repository is a single-user macOS Home Manager configuration for `al` on `aarch64-darwin`.
+This repository is a macOS Home Manager configuration for multiple profiles on `aarch64-darwin`.
 
 `home.nix` is the top-level Home Manager module.
 
-`flake.nix` defines the flake inputs, `homeConfigurations.al`, and the exported Neovim package/app.
+`flake.nix` defines the flake inputs, the `homeConfigurations` entries such as `personal` and `work`, and the exported Neovim package/app.
 
 `modules/` contains the actual Home Manager and NVF configuration split by concern.
+
+`profiles/` contains profile-specific package sets and overrides layered on top of the shared modules.
 
 ## Core Commands
 
 Evaluate the config before committing Nix changes:
 
-`nix eval .#homeConfigurations.al.activationPackage.drvPath`
+`nix eval .#homeConfigurations.personal.activationPackage.drvPath`
+
+`nix eval .#homeConfigurations.work.activationPackage.drvPath`
 
 Build without switching:
 
-`nix run home-manager -- build --flake .#al`
+`nix run home-manager -- build --flake .#personal`
+
+`nix run home-manager -- build --flake .#work`
 
 Apply the configuration:
 
-`nix run home-manager -- switch --flake .#al`
+`nix run home-manager -- switch --flake .#personal`
+
+`nix run home-manager -- switch --flake .#work`
 
 Inspect exported flake outputs when changing `flake.nix`:
 
@@ -92,9 +100,9 @@ Collect garbage with:
 
 After updating inputs, rerun config evaluation, Home Manager build, and a Neovim smoke test before committing.
 
-`nix eval .#homeConfigurations.al.activationPackage.drvPath`
+`nix eval .#homeConfigurations.personal.activationPackage.drvPath`
 
-`nix run home-manager -- build --flake .#al`
+`nix run home-manager -- build --flake .#personal`
 
 `nix run .#neovim -- --headless '+qa!'`
 
@@ -116,7 +124,9 @@ To find likely non-Nix installs that may need cleanup after a migration, use:
 
 When removing old manual installs, preserve config and state directories unless the task explicitly asks to remove them too.
 
-This repo currently targets one user and one system only: `al` on `aarch64-darwin`.
+This repo currently targets multiple macOS profiles on `aarch64-darwin`.
+
+Keep broadly shared packages in `modules/base.nix`, and put profile-specific packages or overrides in `profiles/`.
 
 ## Commit Format
 

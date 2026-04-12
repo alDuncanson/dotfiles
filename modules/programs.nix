@@ -203,6 +203,15 @@
       nix-direnv.enable = true;
       config.global.hide_env_diff = true;
     };
+    gh = {
+      enable = true;
+      gitCredentialHelper.enable = true;
+      settings = {
+        aliases.co = "pr checkout";
+        git_protocol = "https";
+        prompt = "enabled";
+      };
+    };
     delta = {
       enable = true;
       enableGitIntegration = true;
@@ -252,9 +261,11 @@
     git = {
       enable = true;
       signing.format = null;
-      settings.user = {
-        name = "alDuncanson";
-        email = "alDuncanson@proton.me";
+      settings = {
+        commit.gpgsign = false;
+        diff.submodule = "log";
+        fetch.prune = true;
+        init.defaultBranch = "main";
       };
     };
     lazygit = {
