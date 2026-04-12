@@ -13,14 +13,6 @@
     };
     direnv = {
       enable = true;
-      # Work around direnv 2.37.1 build regression on darwin after flake update.
-      package = pkgs.direnv.overrideAttrs (old: {
-        env =
-          (old.env or {})
-          // {
-            CGO_ENABLED = "1";
-          };
-      });
       nix-direnv.enable = true;
       config.global.hide_env_diff = true;
     };
