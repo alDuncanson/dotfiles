@@ -7,10 +7,33 @@
       enableExtraDiagnostics = true;
       enableTreesitter = true;
       enableFormat = true;
+      bash.enable = true;
+      hcl = {
+        enable = true;
+        lsp.servers = ["terraformls-hcl"];
+      };
+      json.enable = true;
       markdown.enable = true;
       nix.enable = true;
-      python.enable = true;
+      python = {
+        enable = true;
+        lsp.servers = [
+          "ruff"
+          "ty"
+        ];
+        format.type = [
+          "ruff-check"
+          "ruff"
+        ];
+        extraDiagnostics.enable = false;
+      };
       rust.enable = true;
+      terraform = {
+        enable = true;
+        lsp.servers = ["terraformls-tf"];
+        format.type = ["terraform-fmt"];
+      };
+      toml.enable = true;
       yaml.enable = true;
     };
     lsp = {
