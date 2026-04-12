@@ -50,7 +50,9 @@
       package = pkgs.ghostty-bin;
       settings = {
         font-family = "MonoLisa Custom";
+        font-size = 15;
         confirm-close-surface = false;
+        macos-titlebar-style = "hidden";
         quit-after-last-window-closed = true;
         theme = "dark:Gruvbox Dark,light:Gruvbox Light";
       };
@@ -78,9 +80,11 @@
 
   xdg.configFile."zellij/config-dark.kdl".text = ''
     theme "gruvbox-dark"
+    show_startup_tips false
   '';
 
   xdg.configFile."zellij/config-light.kdl".text = ''
     theme "gruvbox-light"
+    show_startup_tips false
   '';
 }
