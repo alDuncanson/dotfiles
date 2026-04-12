@@ -21,14 +21,11 @@
     nvf,
     ...
   }: let
-    supportedSystems = [
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-    forEachSystem = nixpkgs.lib.genAttrs supportedSystems;
-    neovimFor = system:
+    system = "aarch64-darwin";
+    pkgs = nixpkgs.legacyPackages.${system};
+    neovim =
       (nvf.lib.neovimConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
+        inherit pkgs;
         modules = [
           {
             config = import ./modules/nvim.nix;
@@ -38,10 +35,7 @@
   in {
     homeConfigurations = {
       al = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-        extraSpecialArgs = {
-          username = "al";
-        };
+        inherit pkgs;
         modules = [
           nvf.homeManagerModules.default
           ./home.nix
@@ -52,20 +46,20 @@
       };
     };
 
-    packages = forEachSystem (system: {
-      default = neovimFor system;
-      neovim = neovimFor system;
-    });
+    packages.${system} = {
+      default = neovim;
+      inherit neovim;
+    };
 
-    apps = forEachSystem (system: {
+    apps.${system} = {
       default = {
         type = "app";
-        program = "${neovimFor system}/bin/nvim";
+        program = "${neovim}/bin/nvim";
       };
       neovim = {
         type = "app";
-        program = "${neovimFor system}/bin/nvim";
+        program = "${neovim}/bin/nvim";
       };
-    });
+    };
   };
 }
