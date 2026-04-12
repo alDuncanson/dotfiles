@@ -1,4 +1,8 @@
 {pkgs}: let
+  surfaceBorder = "rounded";
+  surfacePadding = [0 1];
+  surfaceMaxWidth = 88;
+  surfaceMaxHeight = 18;
   accelerated-jk = pkgs.vimUtils.buildVimPlugin {
     pname = "accelerated-jk.nvim";
     version = "8fb5dad";
@@ -58,7 +62,7 @@ in {
       config = {
         severity_sort = true;
         float = {
-          border = "rounded";
+          border = surfaceBorder;
           source = "if_many";
           scope = "line";
           header = "";
@@ -70,6 +74,7 @@ in {
     telescope.enable = true;
     terminal.toggleterm = {
       enable = true;
+      setupOpts.float_opts.border = surfaceBorder;
       lazygit.enable = true;
     };
     theme = {
@@ -103,81 +108,138 @@ in {
       '';
     };
     luaConfigPost = ''
+      local function get_hl(name)
+        local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+        return ok and hl or {}
+      end
+
       local function apply_surface_overrides()
-        local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
-        local normal_float = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
-        local win_separator = vim.api.nvim_get_hl(0, { name = "WinSeparator", link = false })
-        local palette = {
-          float_bg = normal_float.bg or normal.bg,
-          float_border = win_separator.fg or normal_float.fg or normal.fg,
-          float_title = normal_float.fg or normal.fg,
-          diagnostic_error = 0x9d0006,
-          diagnostic_warn = 0xaf3a03,
-          diagnostic_info = 0x076678,
-          diagnostic_hint = 0x427b58,
-          yazi_border = win_separator.fg or normal_float.fg or normal.fg,
-        }
+        local normal = get_hl("Normal")
+        local normal_float = get_hl("NormalFloat")
+        local win_separator = get_hl("WinSeparator")
+        local title = get_hl("Title")
+        local diagnostic_error = get_hl("DiagnosticError")
+        local diagnostic_warn = get_hl("DiagnosticWarn")
+        local diagnostic_info = get_hl("DiagnosticInfo")
+        local diagnostic_hint = get_hl("DiagnosticHint")
 
-        if vim.o.background == "dark" then
-          palette = {
-            float_bg = 0x32302f,
-            float_border = 0x928374,
-            float_title = 0x83a598,
-            diagnostic_error = 0xfb4934,
-            diagnostic_warn = 0xfe8019,
-            diagnostic_info = 0x83a598,
-            diagnostic_hint = 0x8ec07c,
-            yazi_border = 0xfbf1c7,
-          }
-        else
-          palette = {
-            float_bg = 0xf2e5bc,
-            float_border = 0xbdae93,
-            float_title = 0x076678,
-            diagnostic_error = 0x9d0006,
-            diagnostic_warn = 0xaf3a03,
-            diagnostic_info = 0x076678,
-            diagnostic_hint = 0x427b58,
-            yazi_border = 0x076678,
-          }
-        end
+        local panel_bg = normal.bg or normal_float.bg
+        local panel_fg = normal.fg or normal_float.fg or title.fg
+        local border_fg = win_separator.fg or normal_float.fg or panel_fg
+        local title_fg = title.fg or border_fg
 
-        local function set_float_hl(name, opts)
+        local function set_surface_hl(name, opts)
           vim.api.nvim_set_hl(0, name, vim.tbl_extend("force", {
-            bg = palette.float_bg,
-            fg = normal_float.fg or normal.fg,
+            bg = panel_bg,
+            fg = panel_fg,
           }, opts or {}))
         end
 
-        set_float_hl("NormalFloat")
-        set_float_hl("FloatBorder", { fg = palette.float_border })
-        set_float_hl("FloatTitle", {
-          fg = palette.float_title,
-          bold = true,
-        })
-        set_float_hl("NoicePopup")
-        set_float_hl("NoicePopupBorder", { fg = palette.float_border })
-        set_float_hl("DiagnosticFloatingError", { fg = palette.diagnostic_error })
-        set_float_hl("DiagnosticFloatingWarn", { fg = palette.diagnostic_warn })
-        set_float_hl("DiagnosticFloatingInfo", { fg = palette.diagnostic_info })
-        set_float_hl("DiagnosticFloatingHint", { fg = palette.diagnostic_hint })
+        local function set_border_hl(name, fg)
+          set_surface_hl(name, { fg = fg or border_fg })
+        end
 
-        vim.api.nvim_set_hl(0, "WhichKeyNormal", {
-          fg = normal_float.fg or normal.fg,
-          bg = normal.bg,
-        })
-        vim.api.nvim_set_hl(0, "WhichKeyBorder", {
-          fg = win_separator.fg or normal_float.fg or normal.fg,
-          bg = normal.bg,
-        })
-        vim.api.nvim_set_hl(0, "WhichKeyTitle", {
-          fg = normal_float.fg or normal.fg,
-          bg = normal.bg,
+        local function set_diagnostic_hl(name, diagnostic)
+          set_surface_hl(name, { fg = diagnostic.fg or border_fg })
+        end
+
+        set_surface_hl("NormalFloat")
+        set_border_hl("FloatBorder")
+        set_surface_hl("FloatTitle", {
+          fg = title_fg,
           bold = true,
         })
+        set_surface_hl("NoicePopup")
+        set_border_hl("NoicePopupBorder")
+        set_surface_hl("NoicePopupmenu")
+        set_border_hl("NoicePopupmenuBorder")
+        set_surface_hl("NoiceMini")
+        set_surface_hl("NoiceCmdlinePopup")
+        set_border_hl("NoiceCmdlinePopupBorder")
+        set_surface_hl("NoiceCmdlinePopupTitle", {
+          fg = title_fg,
+          bold = true,
+        })
+        set_surface_hl("NoiceConfirm")
+        set_border_hl("NoiceConfirmBorder")
+
+        set_diagnostic_hl("DiagnosticFloatingError", diagnostic_error)
+        set_diagnostic_hl("DiagnosticFloatingWarn", diagnostic_warn)
+        set_diagnostic_hl("DiagnosticFloatingInfo", diagnostic_info)
+        set_diagnostic_hl("DiagnosticFloatingHint", diagnostic_hint)
+
+        set_surface_hl("WhichKeyNormal")
+        set_border_hl("WhichKeyBorder")
+        set_surface_hl("WhichKeyTitle", {
+          fg = title_fg,
+          bold = true,
+        })
+
+        set_surface_hl("TelescopeNormal")
+        set_surface_hl("TelescopePromptNormal")
+        set_surface_hl("TelescopeResultsNormal")
+        set_surface_hl("TelescopePreviewNormal")
+        set_border_hl("TelescopeBorder")
+        set_border_hl("TelescopePromptBorder")
+        set_border_hl("TelescopeResultsBorder")
+        set_border_hl("TelescopePreviewBorder")
+        set_surface_hl("TelescopeTitle", {
+          fg = title_fg,
+          bold = true,
+        })
+        set_surface_hl("TelescopePromptTitle", {
+          fg = title_fg,
+          bold = true,
+        })
+        set_surface_hl("TelescopeResultsTitle", {
+          fg = title_fg,
+          bold = true,
+        })
+        set_surface_hl("TelescopePreviewTitle", {
+          fg = title_fg,
+          bold = true,
+        })
+
+        set_surface_hl("NotifyBackground")
+        set_surface_hl("NotifyERRORBody")
+        set_surface_hl("NotifyWARNBody")
+        set_surface_hl("NotifyINFOBody")
+        set_surface_hl("NotifyDEBUGBody")
+        set_surface_hl("NotifyTRACEBody")
+        set_border_hl("NotifyERRORBorder", diagnostic_error.fg)
+        set_border_hl("NotifyWARNBorder", diagnostic_warn.fg)
+        set_border_hl("NotifyINFOBorder", diagnostic_info.fg)
+        set_border_hl("NotifyDEBUGBorder")
+        set_border_hl("NotifyTRACEBorder")
+        set_surface_hl("NotifyERRORIcon", { fg = diagnostic_error.fg or border_fg })
+        set_surface_hl("NotifyWARNIcon", { fg = diagnostic_warn.fg or border_fg })
+        set_surface_hl("NotifyINFOIcon", { fg = diagnostic_info.fg or border_fg })
+        set_surface_hl("NotifyDEBUGIcon", { fg = border_fg })
+        set_surface_hl("NotifyTRACEIcon", { fg = border_fg })
+        set_surface_hl("NotifyERRORTitle", {
+          fg = diagnostic_error.fg or border_fg,
+          bold = true,
+        })
+        set_surface_hl("NotifyWARNTitle", {
+          fg = diagnostic_warn.fg or border_fg,
+          bold = true,
+        })
+        set_surface_hl("NotifyINFOTitle", {
+          fg = diagnostic_info.fg or border_fg,
+          bold = true,
+        })
+        set_surface_hl("NotifyDEBUGTitle", {
+          fg = border_fg,
+          bold = true,
+        })
+        set_surface_hl("NotifyTRACETitle", {
+          fg = border_fg,
+          bold = true,
+        })
+
         vim.api.nvim_set_hl(0, "YaziFloatBorder", {
-          fg = palette.yazi_border,
-          bg = normal.bg,
+          fg = border_fg,
+          bg = panel_bg,
           bold = true,
         })
       end
@@ -213,27 +275,55 @@ in {
       })
     '';
     ui = {
-      borders.enable = true;
+      borders = {
+        enable = true;
+        globalStyle = surfaceBorder;
+      };
       breadcrumbs.enable = true;
       noice = {
         enable = true;
         setupOpts = {
-          views.hover = {
-            position = {
-              row = 2;
-              col = 1;
+          notify.view = "mini";
+          messages = {
+            view_warn = "mini";
+            view_error = "mini";
+          };
+          lsp.message.view = "mini";
+          views = {
+            hover = {
+              position = {
+                row = 2;
+                col = 1;
+              };
+              size = {
+                max_width = surfaceMaxWidth;
+                max_height = surfaceMaxHeight;
+              };
+              border = {
+                style = surfaceBorder;
+                padding = surfacePadding;
+              };
+              win_options = {
+                wrap = true;
+                linebreak = true;
+              };
             };
-            size = {
-              max_width = 88;
-              max_height = 18;
-            };
-            border = {
-              style = "rounded";
-              padding = [0 1];
-            };
-            win_options = {
-              wrap = true;
-              linebreak = true;
+            mini = {
+              border = {
+                style = surfaceBorder;
+                padding = surfacePadding;
+              };
+              size = {
+                max_width = surfaceMaxWidth;
+                max_height = 10;
+              };
+              win_options = {
+                winblend = 0;
+                winhighlight = {
+                  Normal = "NoicePopup";
+                  FloatBorder = "NoicePopupBorder";
+                };
+              };
             };
           };
         };
@@ -246,7 +336,7 @@ in {
         setupOpts = {
           open_for_directories = true;
           highlight_hovered_buffers_in_same_directory = false;
-          yazi_floating_window_border = "rounded";
+          yazi_floating_window_border = surfaceBorder;
         };
       };
     };
