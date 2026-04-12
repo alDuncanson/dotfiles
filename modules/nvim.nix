@@ -31,6 +31,30 @@
       transparent = false;
     };
     luaConfigPost = ''
+      local function apply_surface_overrides()
+        local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+        local normal_float = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false })
+        local win_separator = vim.api.nvim_get_hl(0, { name = "WinSeparator", link = false })
+
+        vim.api.nvim_set_hl(0, "WhichKeyNormal", {
+          fg = normal_float.fg or normal.fg,
+          bg = normal.bg,
+        })
+        vim.api.nvim_set_hl(0, "WhichKeyBorder", {
+          fg = win_separator.fg or normal_float.fg or normal.fg,
+          bg = normal.bg,
+        })
+        vim.api.nvim_set_hl(0, "WhichKeyTitle", {
+          fg = normal_float.fg or normal.fg,
+          bg = normal.bg,
+          bold = true,
+        })
+        vim.api.nvim_set_hl(0, "YaziFloatBorder", {
+          fg = win_separator.fg or normal_float.fg or normal.fg,
+          bg = normal.bg,
+        })
+      end
+
       local function sync_background_with_macos()
         local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
         if not handle then
@@ -45,9 +69,16 @@
           vim.o.background = background
           vim.cmd.colorscheme("gruvbox")
         end
+
+        apply_surface_overrides()
       end
 
       sync_background_with_macos()
+
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        desc = "Keep popup surfaces aligned with the editor",
+        callback = apply_surface_overrides,
+      })
 
       vim.api.nvim_create_autocmd("FocusGained", {
         desc = "Sync gruvbox background with macOS appearance",
@@ -63,7 +94,10 @@
       motion.flash-nvim.enable = true;
       yazi-nvim = {
         enable = true;
-        setupOpts.open_for_directories = true;
+        setupOpts = {
+          open_for_directories = true;
+          highlight_hovered_buffers_in_same_directory = false;
+        };
       };
     };
   };
