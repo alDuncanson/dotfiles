@@ -15,6 +15,7 @@
       ripgrep
       yazi
       glow
+      amp-cli
       biome
       nodejs
       bun
