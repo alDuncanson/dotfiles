@@ -28,8 +28,32 @@
       enable = true;
       name = "gruvbox";
       style = "dark";
-      transparent = true;
+      transparent = false;
     };
+    luaConfigPost = ''
+      local function sync_background_with_macos()
+        local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+        if not handle then
+          return
+        end
+
+        local appearance = handle:read("*a")
+        handle:close()
+
+        local background = appearance:match("Dark") and "dark" or "light"
+        if vim.o.background ~= background then
+          vim.o.background = background
+          vim.cmd.colorscheme("gruvbox")
+        end
+      end
+
+      sync_background_with_macos()
+
+      vim.api.nvim_create_autocmd("FocusGained", {
+        desc = "Sync gruvbox background with macOS appearance",
+        callback = sync_background_with_macos,
+      })
+    '';
     ui = {
       borders.enable = true;
       breadcrumbs.enable = true;
