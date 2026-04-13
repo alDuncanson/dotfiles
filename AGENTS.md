@@ -41,6 +41,14 @@ Evaluate the config before committing Nix changes:
 
 `nix eval .#homeConfigurations.work.activationPackage.drvPath`
 
+Run the standard formatter:
+
+`nix fmt`
+
+Run the standard flake checks:
+
+`nix flake check`
+
 Build without switching:
 
 `nix run home-manager -- build --flake .#personal`
@@ -122,6 +130,8 @@ Collect garbage with:
 After updating inputs, rerun config evaluation, Home Manager build, and a Neovim smoke test before committing.
 
 `nix eval .#homeConfigurations.personal.activationPackage.drvPath`
+
+`nix flake check`
 
 `nix run home-manager -- build --flake .#personal`
 

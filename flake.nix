@@ -17,9 +17,10 @@
     };
   };
 
-  outputs = inputs@{flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [./home.nix];
-      systems = ["aarch64-darwin"];
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ ./home.nix ];
+      systems = [ "aarch64-darwin" ];
     };
 }
