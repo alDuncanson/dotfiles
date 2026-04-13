@@ -17,8 +17,6 @@
           gotop
           sendme
           harper
-          pi-coding-agent
-          opencode
           gws
           pandoc
           tectonic
