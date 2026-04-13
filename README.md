@@ -24,6 +24,12 @@ macOS Home Manager dotfiles for `aarch64-darwin`, shared across personal and wor
 ## Commands
 
 ```bash
+# format all Nix files via the flake formatter
+nix fmt
+
+# run the standard repo checks
+nix flake check
+
 # inspect exports
 nix flake show --all-systems
 

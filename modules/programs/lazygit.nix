@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   dotfiles.home.shared = {
     programs.lazygit = {
       enable = true;
