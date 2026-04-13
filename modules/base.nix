@@ -28,6 +28,7 @@
           jq
           yq
           just
+          television
 
           # Shared Python, cloud, container, and infrastructure tooling.
           python3
