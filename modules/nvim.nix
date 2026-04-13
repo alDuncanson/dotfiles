@@ -1,4 +1,9 @@
-{pkgs}: let
+{
+  inputs,
+  config,
+  ...
+}: let
+  mkNvfSettings = pkgs: let
   surfaceBorder = "rounded";
   surfacePadding = [0 1];
   surfaceMaxWidth = 88;
@@ -343,6 +348,45 @@ in {
           highlight_hovered_buffers_in_same_directory = false;
           yazi_floating_window_border = surfaceBorder;
         };
+      };
+    };
+  };
+};
+in {
+  dotfiles.neovim.settings = mkNvfSettings;
+
+  dotfiles.home.shared = {pkgs, ...}: {
+    programs.nvf = {
+      enable = true;
+      settings = mkNvfSettings pkgs;
+    };
+  };
+
+  perSystem = {system, ...}: let
+    pkgs = config.dotfiles.lib.mkPkgs system;
+    neovim =
+      (inputs.nvf.lib.neovimConfiguration {
+        inherit pkgs;
+        modules = [
+          {
+            config = mkNvfSettings pkgs;
+          }
+        ];
+      }).neovim;
+  in {
+    packages = {
+      default = neovim;
+      inherit neovim;
+    };
+
+    apps = {
+      default = {
+        type = "app";
+        program = "${neovim}/bin/nvim";
+      };
+      neovim = {
+        type = "app";
+        program = "${neovim}/bin/nvim";
       };
     };
   };

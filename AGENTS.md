@@ -4,13 +4,34 @@
 
 This repository is a macOS Home Manager configuration for multiple profiles on `aarch64-darwin`.
 
-`home.nix` is the top-level Home Manager module.
+`flake.nix` is the only true entrypoint. It should stay small and mostly declare inputs, systems, and top-level module imports.
 
-`flake.nix` defines the flake inputs, the `homeConfigurations` entries such as `personal` and `work`, and the exported Neovim package/app.
+`home.nix` is the top-level flake-parts module for this repo. It defines the shared `dotfiles` option namespace, assembles `homeConfigurations`, and imports the rest of the repository tree.
 
-`modules/` contains the actual Home Manager and NVF configuration split by concern.
+`modules/` contains dendritic feature modules. Each non-entry Nix file under this tree should represent one feature and contribute through the top-level `dotfiles` config rather than acting as an ad hoc standalone expression.
 
-`profiles/` contains profile-specific package sets and overrides layered on top of the shared modules.
+`profiles/` contains profile modules that declare per-machine or per-context identity and package differences layered on top of the shared modules.
+
+## Dendritic Pattern
+
+Follow the dendritic pattern described by `mightyiam/dendritic` for all future structural work in this repo.
+
+In practice for this repository:
+
+- Treat every non-entry Nix file as a flake-parts module, or as a leaf imported by a flake-parts module of the same top-level configuration class.
+- Name files by feature, not by expression type. A path should answer "what concern lives here?" rather than "what shape does this file return?"
+- Keep `flake.nix` as wiring only. Put reusable values, profile declarations, and lower-level Home Manager or NVF composition under the top-level `dotfiles.*` option tree.
+- Prefer contributing to `dotfiles.home.shared` from shared feature modules, and to `dotfiles.profiles.<name>.homeModule` from profile-specific modules.
+- Prefer storing shared functions and constants in top-level config such as `dotfiles.lib.*` rather than threading them through `specialArgs` or `extraSpecialArgs`.
+- When a config payload is mostly foreign syntax, such as Starship TOML, keep it in an adjacent non-Nix file and load it from the feature module.
+- Split files when a feature grows too large, but avoid speculative abstractions. A small feature module is better than a broad catch-all module.
+- Prefer automatic or near-automatic importing for feature directories when it keeps the entrypoint small and the tree easy to extend.
+
+Anti-patterns for this repo:
+
+- Reintroducing `extraSpecialArgs` or `specialArgs` just to pass shared values between files.
+- Growing `flake.nix` back into the place where outputs, profile data, and feature logic all live together.
+- Adding large multi-feature blobs when the concern can live in its own module path.
 
 ## Core Commands
 
@@ -54,7 +75,7 @@ When validating a package for this repo, prefer the pinned flake package set ove
 
 Keep Neovim changes declarative under `programs.nvf.settings`.
 
-`modules/nvim.nix` is the source of truth for plugin setup, colors, and Lua overrides.
+`modules/nvim.nix` is the source of truth for plugin setup, colors, Lua overrides, and the exported `.#neovim` app packaging.
 
 After changing NVF or Neovim behavior, build the Home Manager config and, when useful, smoke-test Neovim headlessly with the flake app.
 
@@ -70,9 +91,9 @@ Then read files under that path to confirm option names or defaults.
 
 When enabling new NVF language modules, prefer checking the pinned NVF module files under `modules/plugins/languages/` rather than guessing option names.
 
-If an NVF change affects the exported `.#neovim` app, test both Home Manager and the standalone flake app. They share the top-level `pkgs` set from `flake.nix`.
+If an NVF change affects the exported `.#neovim` app, test both Home Manager and the standalone flake app. They share the same `dotfiles.lib.mkPkgs` package construction path.
 
-If a Neovim or NVF change pulls in unfree packages, allow them in the shared `pkgs` import in `flake.nix`, not only inside Home Manager modules, otherwise `nix run .#neovim` can fail even when Home Manager builds succeed.
+If a Neovim or NVF change pulls in unfree packages, allow them in `dotfiles.lib.mkPkgs`, not only inside Home Manager modules, otherwise `nix run .#neovim` can fail even when Home Manager builds succeed.
 
 Useful headless smoke-test patterns:
 
@@ -126,7 +147,7 @@ When removing old manual installs, preserve config and state directories unless 
 
 This repo currently targets multiple macOS profiles on `aarch64-darwin`.
 
-Keep broadly shared packages in `modules/base.nix`, and put profile-specific packages or overrides in `profiles/`.
+Keep broadly shared packages and settings in dendritic feature modules under `modules/`, and put profile-specific packages or overrides in `profiles/`.
 
 ## Commit Format
 
