@@ -30,7 +30,6 @@
           just
           television
           pi-coding-agent
-          opencode
 
           # Shared Python, cloud, container, and infrastructure tooling.
           python3
