@@ -19,7 +19,6 @@
           ripgrep
           yazi
           glow
-          amp-cli
           biome
           nodejs
           bun
@@ -28,8 +27,6 @@
           jq
           yq
           just
-          television
-          pi-coding-agent
 
           # Shared Python, cloud, container, and infrastructure tooling.
           python3
