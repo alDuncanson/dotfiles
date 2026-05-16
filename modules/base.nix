@@ -35,7 +35,6 @@
           uv
           ruff
           ty
-          google-cloud-sdk
           kubectl
           kubernetes-helm
           docker
