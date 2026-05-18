@@ -46,6 +46,7 @@
 
         sessionPath = [
           "$HOME/.local/bin"
+          "$HOME/google-cloud-sdk/bin"
           "$HOME/.npm-global/bin"
         ];
 
