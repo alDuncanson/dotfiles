@@ -67,6 +67,10 @@ let
           toml.enable = true;
           yaml.enable = true;
         };
+        formatter.conform-nvim.setupOpts.formatters.deno_fmt.append_args = [
+          "--prose-wrap"
+          "preserve"
+        ];
         lsp = {
           enable = true;
           formatOnSave = true;
