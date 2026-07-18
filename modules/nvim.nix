@@ -46,6 +46,9 @@ let
             enable = true;
             format.type = [ "nixfmt" ];
           };
+          go = {
+            enable = true;
+          };
           python = {
             enable = true;
             lsp.servers = [
