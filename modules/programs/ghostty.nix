@@ -7,7 +7,7 @@
         enable = true;
         package = pkgs.ghostty-bin;
         settings = {
-          font-family = "MonoLisa Custom";
+          font-family = "MonoLisaCode";
           font-size = 17;
           confirm-close-surface = false;
           mouse-hide-while-typing = true;
