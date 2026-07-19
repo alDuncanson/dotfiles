@@ -6,19 +6,12 @@
 }:
 let
   inherit (lib)
-    hasSuffix
     mapAttrs
     mapAttrsToList
     mkOption
     nameValuePair
     types
     ;
-
-  importNixFiles =
-    dir:
-    builtins.map (name: dir + "/${name}") (
-      builtins.filter (name: hasSuffix ".nix" name) (builtins.attrNames (builtins.readDir dir))
-    );
 
   profileType = types.submodule (
     { ... }:
@@ -94,7 +87,10 @@ let
   );
 in
 {
-  imports = importNixFiles ./modules ++ importNixFiles ./profiles;
+  imports = [
+    (inputs.import-tree ./modules)
+    (inputs.import-tree ./profiles)
+  ];
 
   options.dotfiles = {
     defaultSystem = mkOption {
@@ -117,11 +113,6 @@ in
         type = types.deferredModule;
         default = { };
       };
-    };
-
-    neovim.settings = mkOption {
-      type = types.raw;
-      default = _: { };
     };
 
     profiles = mkOption {
