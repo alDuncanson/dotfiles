@@ -32,13 +32,16 @@
         # NODE_EXTRA_CA_CERTS below).
         home.activation.corpCaBundle = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           mkdir -p "$HOME/.config/certs"
-          if [ -f "$HOME/.config/certs/gfs-root-ca.pem" ]; then
+          if [ -s "$HOME/.config/certs/gfs-root-ca.pem" ]; then
             cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
               "$HOME/.config/certs/gfs-root-ca.pem" \
               > "$HOME/.config/certs/combined-ca.pem"
           else
-            cp ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
-              "$HOME/.config/certs/combined-ca.pem"
+            echo "corpCaBundle: WARNING corp root CA missing or empty at $HOME/.config/certs/gfs-root-ca.pem" >&2
+            echo "corpCaBundle: git/Node HTTPS through the GFS proxy will fail until it is re-exported:" >&2
+            echo "corpCaBundle:   security find-certificate -a -c <corp-root-ca> -p /Library/Keychains/System.keychain > $HOME/.config/certs/gfs-root-ca.pem" >&2
+            cat ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt \
+              > "$HOME/.config/certs/combined-ca.pem"
           fi
         '';
 
