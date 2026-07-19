@@ -371,8 +371,6 @@ let
     };
 in
 {
-  dotfiles.neovim.settings = mkNvfSettings;
-
   dotfiles.home.shared =
     { pkgs, ... }:
     {
