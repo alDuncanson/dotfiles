@@ -37,7 +37,7 @@ let
           bash.enable = true;
           hcl = {
             enable = true;
-            lsp.servers = [ "terraformls-hcl" ];
+            lsp.servers = [ "terraform-ls" ];
           };
           helm.enable = true;
           json.enable = true;
@@ -64,7 +64,7 @@ let
           rust.enable = true;
           terraform = {
             enable = true;
-            lsp.servers = [ "terraformls-tf" ];
+            lsp.servers = [ "terraform-ls" ];
             format.type = [ "terraform-fmt" ];
           };
           toml.enable = true;
