@@ -14,7 +14,6 @@
           asciinema
           fh
           slides
-          gotop
           sendme
           harper
           gws
