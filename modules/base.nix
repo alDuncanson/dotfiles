@@ -27,6 +27,7 @@
           jq
           yq
           just
+          herdr
 
           # Shared Python, cloud, container, and infrastructure tooling.
           python3
