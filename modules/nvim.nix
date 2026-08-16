@@ -24,6 +24,17 @@ let
           sha256 = "03s8bw3as2d3agqvllaxicmlbp1pmabc4g2bwyh4whb50h4fm66f";
         };
       };
+      # VS Code-format snippet packs, loaded by LuaSnip's from_vscode loader
+      react-hooks-snippets = pkgs.vimUtils.buildVimPlugin {
+        pname = "react-hooks-snippets";
+        version = "3.1.1";
+        src = pkgs.fetchFromGitHub {
+          owner = "alDuncanson";
+          repo = "react-hooks-snippets";
+          rev = "v3.1.1";
+          sha256 = "122aplgfqgjx493b7p7g758lis0q2ax1jp591492ifkjs7ziiwkh";
+        };
+      };
     in
     {
       vim = {
@@ -98,6 +109,18 @@ let
             };
           };
         };
+        # LuaSnip needs jsregexp for VS Code-style snippet transforms
+        # (e.g. the capitalized setter mirror in useState).
+        luaPackages = [ "jsregexp" ];
+        snippets.luasnip = {
+          enable = true;
+          providers = [ react-hooks-snippets ];
+          # Without a completion engine enabled, nvf omits the from_vscode
+          # loader, so set it explicitly.
+          loaders = "require('luasnip.loaders.from_vscode').lazy_load()";
+        };
+        # nvf registers LuaSnip lazily with no trigger; load it on insert.
+        lazy.plugins.luasnip.event = [ "InsertEnter" ];
         statusline.lualine.enable = true;
         telescope.enable = true;
         terminal.toggleterm = {
@@ -301,6 +324,22 @@ let
             desc = "Sync gruvbox background with macOS appearance",
             callback = sync_background_with_macos,
           })
+
+          vim.keymap.set({ "i", "s" }, "<Tab>", function()
+            local ok, luasnip = pcall(require, "luasnip")
+            if ok and luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+            end
+          end, { silent = true, desc = "Expand snippet or jump to next placeholder" })
+
+          vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+            local ok, luasnip = pcall(require, "luasnip")
+            if ok and luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            end
+          end, { silent = true, desc = "Jump to previous snippet placeholder" })
         '';
         ui = {
           borders = {
