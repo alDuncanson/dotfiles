@@ -109,6 +109,9 @@ let
             };
           };
         };
+        # blink picks up LuaSnip automatically (snippets.preset = "luasnip")
+        # and its default sources include snippets alongside lsp/path/buffer.
+        autocomplete.blink-cmp.enable = true;
         # LuaSnip needs jsregexp for VS Code-style snippet transforms
         # (e.g. the capitalized setter mirror in useState).
         luaPackages = [ "jsregexp" ];
