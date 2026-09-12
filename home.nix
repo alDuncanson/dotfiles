@@ -39,7 +39,8 @@ let
         };
 
         gitEmail = mkOption {
-          type = types.str;
+          type = types.nullOr types.str;
+          default = null;
         };
 
         homeModule = mkOption {
@@ -68,8 +69,8 @@ let
 
           programs.git.settings.user = {
             name = profile.gitName;
-            email = profile.gitEmail;
-          };
+          }
+          // lib.optionalAttrs (profile.gitEmail != null) { email = profile.gitEmail; };
         }
         config.dotfiles.home.shared
         profile.homeModule
