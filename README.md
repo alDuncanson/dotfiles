@@ -1,6 +1,6 @@
 # dotfiles
 
-macOS Home Manager dotfiles for `aarch64-darwin`, shared across personal and work profiles.
+macOS Home Manager dotfiles for `aarch64-darwin`.
 
 - Home Manager for user environment management
 - `flake-parts` as the top-level flake composition layer
@@ -17,9 +17,16 @@ macOS Home Manager dotfiles for `aarch64-darwin`, shared across personal and wor
 ## Profiles
 
 - `personal` with alias `al`
-- `work` with alias `redacted`
 
-`home-manager switch --flake .` resolves via the alias on each machine. Explicit forms like `.#personal` and `.#work` remain available.
+`home-manager switch --flake .` resolves via the alias on each machine. The explicit form `.#personal` remains available.
+
+Machine-specific profiles that do not belong in a public repository live in their own flake, which imports this one as a module:
+
+```nix
+inputs.dotfiles.url = "github:alDuncanson/dotfiles";
+
+imports = [ inputs.dotfiles.flakeModules.default ./profiles/<name>.nix ];
+```
 
 ## Commands
 
@@ -35,15 +42,12 @@ nix flake show --all-systems
 
 # evaluate profiles
 nix eval .#homeConfigurations.personal.activationPackage.drvPath
-nix eval .#homeConfigurations.work.activationPackage.drvPath
 
 # build profiles without switching
 nix run home-manager -- build --flake .#personal
-nix run home-manager -- build --flake .#work
 
-# apply the current machine profile or an explicit profile
+# apply the current machine profile
 nix run home-manager -- switch --flake .
-nix run home-manager -- switch --flake .#work
 
 # run the exported Neovim app
 nix run .#neovim
