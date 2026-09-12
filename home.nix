@@ -130,6 +130,10 @@ in
         config.allowUnfree = true;
       };
 
+    # Exported so a separate flake can reuse this module tree and contribute its
+    # own profiles, without those profiles living in this repository.
+    flake.flakeModules.default = ./home.nix;
+
     flake.homeConfigurations = canonicalHomes // aliasHomes;
   };
 }

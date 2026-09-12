@@ -39,8 +39,6 @@ Evaluate the config before committing Nix changes:
 
 `nix eval .#homeConfigurations.personal.activationPackage.drvPath`
 
-`nix eval .#homeConfigurations.work.activationPackage.drvPath`
-
 Run the standard formatter:
 
 `nix fmt`
@@ -53,13 +51,9 @@ Build without switching:
 
 `nix run home-manager -- build --flake .#personal`
 
-`nix run home-manager -- build --flake .#work`
-
 Apply the configuration:
 
 `nix run home-manager -- switch --flake .#personal`
-
-`nix run home-manager -- switch --flake .#work`
 
 Inspect exported flake outputs when changing `flake.nix`:
 
