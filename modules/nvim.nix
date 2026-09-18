@@ -68,7 +68,7 @@ let
               "ty"
             ];
             format.type = [
-              "ruff-check"
+              "ruff-fix"
               "ruff"
             ];
             extraDiagnostics.enable = false;
@@ -77,7 +77,7 @@ let
           terraform = {
             enable = true;
             lsp.servers = [ "terraform-ls" ];
-            format.type = [ "terraform-fmt" ];
+            format.type = [ "terraform" ];
           };
           toml.enable = true;
           yaml.enable = true;
@@ -124,7 +124,10 @@ let
         };
         # nvf registers LuaSnip lazily with no trigger; load it on insert.
         lazy.plugins.luasnip.event = [ "InsertEnter" ];
-        statusline.lualine.enable = true;
+        statusline.lualine = {
+          enable = true;
+          integrations.breadcrumbs.nvim-navic.enable = true;
+        };
         telescope.enable = true;
         terminal.toggleterm = {
           enable = true;
@@ -349,7 +352,6 @@ let
             enable = true;
             globalStyle = surfaceBorder;
           };
-          breadcrumbs.enable = true;
           noice = {
             enable = true;
             setupOpts = {
