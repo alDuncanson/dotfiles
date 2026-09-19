@@ -51,6 +51,7 @@ let
             lsp.servers = [ "terraform-ls" ];
           };
           helm.enable = true;
+          html.enable = true;
           json.enable = true;
           lua.enable = true;
           markdown.enable = true;
