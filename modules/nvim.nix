@@ -41,6 +41,11 @@ let
         binds.whichKey.enable = true;
         git.enable = true;
         hideSearchHighlight = true;
+        options = {
+          shiftwidth = 2;
+          softtabstop = 2;
+          tabstop = 2;
+        };
         languages = {
           enableExtraDiagnostics = true;
           enableTreesitter = true;
