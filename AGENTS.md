@@ -6,11 +6,11 @@ This repository is a macOS Home Manager configuration for multiple profiles on `
 
 `flake.nix` is the only true entrypoint. It should stay small and mostly declare inputs, systems, and top-level module imports.
 
-`home.nix` is the top-level flake-parts module for this repo. It defines the shared `dotfiles` option namespace, assembles `homeConfigurations`, and imports the rest of the repository tree.
+`dotfiles.nix` is the framework: a function of this flake's inputs that returns the flake-parts module defining the `dotfiles.*` options, importing `modules/`, and turning `dotfiles.profiles` into `homeConfigurations`. `flake.nix` imports it and exports it as `flakeModules.default`, so a consuming flake needs no inputs of its own beyond `dotfiles`. Read inputs through `config.dotfiles.inputs`, never through the `inputs` module argument, which belongs to whichever flake is importing.
 
 `modules/` contains dendritic feature modules. Each non-entry Nix file under this tree should represent one feature and contribute through the top-level `dotfiles` config rather than acting as an ad hoc standalone expression.
 
-`profiles/` contains profile modules that declare per-machine or per-context identity and package differences layered on top of the shared modules.
+`personal.nix` is the one profile this repository declares: a plain Home Manager module layered on the shared modules. The profile record itself lives in `flake.nix`. Other machines declare their profile in their own flake; see the README.
 
 ## Dendritic Pattern
 
@@ -21,7 +21,7 @@ In practice for this repository:
 - Treat every non-entry Nix file as a flake-parts module, or as a leaf imported by a flake-parts module of the same top-level configuration class.
 - Name files by feature, not by expression type. A path should answer "what concern lives here?" rather than "what shape does this file return?"
 - Keep `flake.nix` as wiring only. Put reusable values, profile declarations, and lower-level Home Manager or NVF composition under the top-level `dotfiles.*` option tree.
-- Prefer contributing to `dotfiles.home.shared` from shared feature modules, and to `dotfiles.profiles.<name>.homeModule` from profile-specific modules.
+- Prefer contributing to `dotfiles.home.shared` from shared feature modules, and to the profile's own Home Manager module (`personal.nix` here) for per-machine differences.
 - Prefer storing shared functions and constants in top-level config such as `dotfiles.lib.*` rather than threading them through `specialArgs` or `extraSpecialArgs`.
 - When a config payload is mostly foreign syntax, such as Starship TOML, keep it in an adjacent non-Nix file and load it from the feature module.
 - Split files when a feature grows too large, but avoid speculative abstractions. A small feature module is better than a broad catch-all module.
@@ -151,7 +151,7 @@ When removing old manual installs, preserve config and state directories unless 
 
 This repo currently targets multiple macOS profiles on `aarch64-darwin`.
 
-Keep broadly shared packages and settings in dendritic feature modules under `modules/`, and put profile-specific packages or overrides in `profiles/`.
+Keep broadly shared packages and settings in dendritic feature modules under `modules/`, and put profile-specific packages or overrides in the profile's module.
 
 ## Commit Format
 

@@ -1,8 +1,4 @@
-{
-  inputs,
-  config,
-  ...
-}:
+{ config, ... }:
 let
   mkNvfSettings =
     pkgs:
@@ -436,7 +432,7 @@ in
     let
       pkgs = config.dotfiles.lib.mkPkgs system;
       neovim =
-        (inputs.nvf.lib.neovimConfiguration {
+        (config.dotfiles.inputs.nvf.lib.neovimConfiguration {
           inherit pkgs;
           modules = [
             {

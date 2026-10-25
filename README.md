@@ -9,10 +9,10 @@ macOS Home Manager dotfiles for `aarch64-darwin`.
 
 ## Layout
 
-- `flake.nix`: entrypoint only; declares inputs and imports the top-level module
-- `home.nix`: top-level flake-parts module; defines `dotfiles.*`, assembles profiles, exports `homeConfigurations`
+- `flake.nix`: declares inputs, imports the framework, exports it, and declares this repo's one profile
+- `dotfiles.nix`: the framework; a function of this flake's inputs that returns the flake-parts module defining `dotfiles.*`, importing `modules/`, and turning `dotfiles.profiles` into `homeConfigurations`
 - `modules/`: shared dendritic feature modules; each file contributes one concern
-- `profiles/`: profile declarations and per-profile Home Manager deltas
+- `personal.nix`: the personal profile's Home Manager module, layered on the shared modules
 
 ## Profiles
 
@@ -20,13 +20,26 @@ macOS Home Manager dotfiles for `aarch64-darwin`.
 
 `home-manager switch --flake .` resolves via the alias on each machine. The explicit form `.#personal` remains available.
 
-Machine-specific profiles that do not belong in a public repository live in their own flake, which imports this one as a module:
+A profile that does not belong in a public repository lives in its own flake. The framework closes over this flake's inputs, so that flake needs only one:
 
 ```nix
-inputs.dotfiles.url = "github:alDuncanson/dotfiles";
+{
+  inputs.dotfiles.url = "github:alDuncanson/dotfiles";
 
-imports = [ inputs.dotfiles.flakeModules.default ./profiles/<name>.nix ];
+  outputs =
+    inputs@{ dotfiles, ... }:
+    dotfiles.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ dotfiles.flakeModules.default ];
+      dotfiles.profiles.work = {
+        aliases = [ "<login>" ];
+        userName = "<login>";
+        homeModule = ./home.nix;
+      };
+    };
+}
 ```
+
+Hosts that compose Home Manager themselves, such as a NixOS system, can import the shared configuration as a plain module from `homeModules.default` instead.
 
 ## Commands
 
