@@ -21,8 +21,18 @@
 
   outputs =
     inputs@{ flake-parts, ... }:
+    let
+      # The framework closes over this flake's inputs, so a consumer needs none of them.
+      dotfiles = import ./dotfiles.nix inputs;
+    in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ./home.nix ];
-      systems = [ "aarch64-darwin" ];
+      imports = [ dotfiles ];
+      flake.flakeModules.default = dotfiles;
+
+      dotfiles.profiles.personal = {
+        aliases = [ "al" ];
+        userName = "al";
+        homeModule = ./personal.nix;
+      };
     };
 }

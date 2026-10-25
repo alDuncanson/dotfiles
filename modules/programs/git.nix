@@ -13,6 +13,7 @@
         '';
       };
       settings = {
+        user.name = "Al Duncanson";
         diff.submodule = "log";
         fetch.prune = true;
         init.defaultBranch = "main";

@@ -1,9 +1,8 @@
-{
-  inputs,
-  lib,
-  config,
-  ...
-}:
+# The dotfiles framework: a function of this flake's inputs returning a
+# flake-parts module. It defines the `dotfiles.*` options, imports the shared
+# feature modules, and turns `dotfiles.profiles` into `homeConfigurations`.
+inputs:
+{ lib, config, ... }:
 let
   inherit (lib)
     mapAttrs
@@ -13,8 +12,10 @@ let
     types
     ;
 
+  topConfig = config;
+
   profileType = types.submodule (
-    { ... }:
+    { config, ... }:
     {
       options = {
         aliases = mkOption {
@@ -24,6 +25,7 @@ let
 
         system = mkOption {
           type = types.str;
+          default = topConfig.dotfiles.defaultSystem;
         };
 
         userName = mkOption {
@@ -32,15 +34,7 @@ let
 
         homeDirectory = mkOption {
           type = types.str;
-        };
-
-        gitName = mkOption {
-          type = types.str;
-        };
-
-        gitEmail = mkOption {
-          type = types.nullOr types.str;
-          default = null;
+          default = "/Users/${config.userName}";
         };
 
         homeModule = mkOption {
@@ -66,11 +60,6 @@ let
             homeDirectory = profile.homeDirectory;
             stateVersion = config.dotfiles.home.stateVersion;
           };
-
-          programs.git.settings.user = {
-            name = profile.gitName;
-          }
-          // lib.optionalAttrs (profile.gitEmail != null) { email = profile.gitEmail; };
         }
         config.dotfiles.home.shared
         profile.homeModule
@@ -88,15 +77,17 @@ let
   );
 in
 {
-  imports = [
-    (inputs.import-tree ./modules)
-    (inputs.import-tree ./profiles)
-  ];
+  imports = [ (inputs.import-tree ./modules) ];
 
   options.dotfiles = {
     defaultSystem = mkOption {
       type = types.str;
       default = "aarch64-darwin";
+    };
+
+    inputs = mkOption {
+      type = types.raw;
+      readOnly = true;
     };
 
     lib.mkPkgs = mkOption {
@@ -123,6 +114,10 @@ in
   };
 
   config = {
+    systems = lib.mkDefault [ config.dotfiles.defaultSystem ];
+
+    dotfiles.inputs = inputs;
+
     dotfiles.lib.mkPkgs =
       system:
       import inputs.nixpkgs {
@@ -130,10 +125,10 @@ in
         config.allowUnfree = true;
       };
 
-    # Exported so a separate flake can reuse this module tree and contribute its
-    # own profiles, without those profiles living in this repository.
-    flake.flakeModules.default = ./home.nix;
-
     flake.homeConfigurations = canonicalHomes // aliasHomes;
+
+    # The shared configuration as one plain Home Manager module, for hosts that
+    # compose Home Manager themselves (a NixOS system, or anyone without flake-parts).
+    flake.homeModules.default = config.dotfiles.home.shared;
   };
 }
