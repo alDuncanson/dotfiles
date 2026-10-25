@@ -20,8 +20,6 @@
       };
     };
 
-    # Load keychain-backed keys into the macOS agent at login so commit signing
-    # works before any ssh connection has loaded the signing key.
     launchd.agents.ssh-add-keychain = {
       enable = true;
       config = {

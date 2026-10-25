@@ -5,7 +5,6 @@
     {
       home = {
         packages = with pkgs; [
-          # Shared CLI and development tools used on both personal and work machines.
           htop
           eza
           fd
@@ -28,8 +27,6 @@
           yq
           just
           herdr
-
-          # Shared Python, cloud, container, and infrastructure tooling.
           python3
           awscli2
           vscode-langservers-extracted

@@ -20,7 +20,6 @@ let
           sha256 = "03s8bw3as2d3agqvllaxicmlbp1pmabc4g2bwyh4whb50h4fm66f";
         };
       };
-      # VS Code-format snippet packs, loaded by LuaSnip's from_vscode loader
       react-hooks-snippets = pkgs.vimUtils.buildVimPlugin {
         pname = "react-hooks-snippets";
         version = "3.1.1";
@@ -111,8 +110,6 @@ let
             };
           };
         };
-        # blink picks up LuaSnip automatically (snippets.preset = "luasnip")
-        # and its default sources include snippets alongside lsp/path/buffer.
         autocomplete.blink-cmp.enable = true;
         # LuaSnip needs jsregexp for VS Code-style snippet transforms
         # (e.g. the capitalized setter mirror in useState).
