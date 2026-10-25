@@ -22,7 +22,6 @@
   outputs =
     inputs@{ flake-parts, ... }:
     let
-      # The flake module closes over this flake's inputs, so a consumer needs none of them.
       dotfiles = import ./dotfiles.nix inputs;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
