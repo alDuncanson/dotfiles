@@ -1,6 +1,3 @@
-# The dotfiles flake module: a function of this flake's inputs returning a
-# flake-parts module. It defines the `dotfiles.*` options, imports the shared
-# feature modules, and turns `dotfiles.profiles` into `homeConfigurations`.
 inputs:
 { lib, config, ... }:
 let
@@ -127,8 +124,6 @@ in
 
     flake.homeConfigurations = canonicalHomes // aliasHomes;
 
-    # The shared configuration as one plain Home Manager module, for hosts that
-    # compose Home Manager themselves (a NixOS system, or anyone without flake-parts).
     flake.homeModules.default = config.dotfiles.home.shared;
   };
 }
