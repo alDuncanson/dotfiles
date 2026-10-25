@@ -9,8 +9,8 @@ macOS Home Manager dotfiles for `aarch64-darwin`.
 
 ## Layout
 
-- `flake.nix`: declares inputs, imports the framework, exports it, and declares this repo's one profile
-- `dotfiles.nix`: the framework; a function of this flake's inputs that returns the flake-parts module defining `dotfiles.*`, importing `modules/`, and turning `dotfiles.profiles` into `homeConfigurations`
+- `flake.nix`: declares inputs, imports the `dotfiles` flake module, exports it, and declares this repo's one profile
+- `dotfiles.nix`: the `dotfiles` flake module; a function of this flake's inputs that returns the flake-parts module defining `dotfiles.*`, importing `modules/`, and turning `dotfiles.profiles` into `homeConfigurations`
 - `modules/`: shared dendritic feature modules; each file contributes one concern
 - `personal.nix`: the personal profile's Home Manager module, layered on the shared modules
 
@@ -20,7 +20,7 @@ macOS Home Manager dotfiles for `aarch64-darwin`.
 
 `home-manager switch --flake .` resolves via the alias on each machine. The explicit form `.#personal` remains available.
 
-A profile that does not belong in a public repository lives in its own flake. The framework closes over this flake's inputs, so that flake needs only one:
+A profile that does not belong in a public repository lives in its own flake. The flake module closes over this flake's inputs, so that flake needs only one:
 
 ```nix
 {
