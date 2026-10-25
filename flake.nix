@@ -17,6 +17,11 @@
       url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    react-hooks-snippets = {
+      url = "github:alDuncanson/react-hooks-snippets";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
