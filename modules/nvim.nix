@@ -20,16 +20,8 @@ let
           sha256 = "03s8bw3as2d3agqvllaxicmlbp1pmabc4g2bwyh4whb50h4fm66f";
         };
       };
-      react-hooks-snippets = pkgs.vimUtils.buildVimPlugin {
-        pname = "react-hooks-snippets";
-        version = "3.1.1";
-        src = pkgs.fetchFromGitHub {
-          owner = "alDuncanson";
-          repo = "react-hooks-snippets";
-          rev = "v3.1.1";
-          sha256 = "122aplgfqgjx493b7p7g758lis0q2ax1jp591492ifkjs7ziiwkh";
-        };
-      };
+      react-hooks-snippets =
+        config.dotfiles.inputs.react-hooks-snippets.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
     {
       vim = {

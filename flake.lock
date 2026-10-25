@@ -137,13 +137,34 @@
         "type": "github"
       }
     },
+    "react-hooks-snippets": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788492439,
+        "narHash": "sha256-Ud1ek8uCpaXnyCY7d4XcFEFjyRLpxi6sw14pNstqUm4=",
+        "owner": "alDuncanson",
+        "repo": "react-hooks-snippets",
+        "rev": "293a8dfbf57ca3d52bde2f93bd6d0abc6b72ddd2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "alDuncanson",
+        "repo": "react-hooks-snippets",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "nixpkgs": "nixpkgs",
-        "nvf": "nvf"
+        "nvf": "nvf",
+        "react-hooks-snippets": "react-hooks-snippets"
       }
     }
   },
