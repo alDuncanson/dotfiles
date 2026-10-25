@@ -1,4 +1,4 @@
-# The dotfiles framework: a function of this flake's inputs returning a
+# The dotfiles flake module: a function of this flake's inputs returning a
 # flake-parts module. It defines the `dotfiles.*` options, imports the shared
 # feature modules, and turns `dotfiles.profiles` into `homeConfigurations`.
 inputs:

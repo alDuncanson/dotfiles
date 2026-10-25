@@ -6,7 +6,7 @@ This repository is a macOS Home Manager configuration for multiple profiles on `
 
 `flake.nix` is the only true entrypoint. It should stay small and mostly declare inputs, systems, and top-level module imports.
 
-`dotfiles.nix` is the framework: a function of this flake's inputs that returns the flake-parts module defining the `dotfiles.*` options, importing `modules/`, and turning `dotfiles.profiles` into `homeConfigurations`. `flake.nix` imports it and exports it as `flakeModules.default`, so a consuming flake needs no inputs of its own beyond `dotfiles`. Read inputs through `config.dotfiles.inputs`, never through the `inputs` module argument, which belongs to whichever flake is importing.
+`dotfiles.nix` is the `dotfiles` flake module: a function of this flake's inputs that returns the flake-parts module defining the `dotfiles.*` options, importing `modules/`, and turning `dotfiles.profiles` into `homeConfigurations`. `flake.nix` imports it and exports it as `flakeModules.default`, so a consuming flake needs no inputs of its own beyond `dotfiles`. Read inputs through `config.dotfiles.inputs`, never through the `inputs` module argument, which belongs to whichever flake is importing.
 
 `modules/` contains dendritic feature modules. Each non-entry Nix file under this tree should represent one feature and contribute through the top-level `dotfiles` config rather than acting as an ad hoc standalone expression.
 
