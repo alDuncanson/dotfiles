@@ -115,6 +115,12 @@ in
 
     dotfiles.inputs = inputs;
 
+    perSystem =
+      { system, ... }:
+      {
+        _module.args.pkgs = config.dotfiles.lib.mkPkgs system;
+      };
+
     dotfiles.lib.mkPkgs =
       system:
       import inputs.nixpkgs {
