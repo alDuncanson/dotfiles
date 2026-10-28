@@ -30,7 +30,10 @@
       dotfiles = import ./dotfiles.nix inputs;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ dotfiles ];
+      imports = [
+        dotfiles
+        ./hosts/thinkpad
+      ];
       systems = [
         "aarch64-darwin"
         "x86_64-linux"
