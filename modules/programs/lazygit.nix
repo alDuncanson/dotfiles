@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.lazygit = {
     programs.lazygit = {
       enable = true;
       enableZshIntegration = true;

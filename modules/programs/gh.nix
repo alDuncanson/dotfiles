@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.gh = {
     programs.gh = {
       enable = true;
       gitCredentialHelper.enable = true;
