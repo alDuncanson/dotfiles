@@ -1,7 +1,7 @@
 # Dotfiles
 
-Declarative dotfiles and user environment configuration for my MacOS machines,
-written in Nix.
+Declarative dotfiles, user environments, and NixOS hosts for my macOS and Linux
+machines, written in Nix.
 
 One flake defines everything a machine needs as a user: packages, shell, git,
 SSH, Neovim, fonts, terminal. Applying it rebuilds that environment from these
@@ -10,6 +10,10 @@ files, so every machine matches and every change is a commit.
 ## Profiles
 
 - `personal` with alias `al`
+
+Every file under `modules/` is an opt-in module, such as `nvim`, `ghostty`, or
+`zsh`. A profile gets all of them unless it lists the ones it wants in
+`modules`.
 
 `nix run home-manager -- switch --flake .` resolves via the alias on each
 machine. The explicit form `.#personal` remains available.
@@ -34,9 +38,17 @@ The flake module closes over this flake's inputs, so that flake needs only:
 }
 ```
 
-Hosts that compose the user environment themselves, such as a NixOS system, can
-import the shared configuration as a plain module from `homeModules.default`
-instead.
+Hosts that compose the user environment themselves can import individual
+modules from `homeModules.<name>`, or all of them from `homeModules.default`.
+
+## Hosts
+
+- `thinkpad`: NixOS on a ThinkPad 13 with Sway, ghostty, Firefox, and the `nvim`
+  module
+
+```bash
+sudo nixos-rebuild switch --flake .#thinkpad
+```
 
 ## Commands
 
