@@ -20,6 +20,40 @@ let
           sha256 = "03s8bw3as2d3agqvllaxicmlbp1pmabc4g2bwyh4whb50h4fm66f";
         };
       };
+      appearanceInit =
+        if pkgs.stdenv.hostPlatform.isDarwin then
+          ''
+            local function sync_background_with_macos()
+              local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+              if not handle then
+                return
+              end
+
+              local appearance = handle:read("*a")
+              handle:close()
+
+              local background = appearance:match("Dark") and "dark" or "light"
+              if vim.o.background ~= background then
+                vim.o.background = background
+                vim.cmd.colorscheme("gruvbox")
+              end
+
+              apply_surface_overrides()
+            end
+
+            sync_background_with_macos()
+          ''
+        else
+          "apply_surface_overrides()\n";
+      appearanceFocus = pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isDarwin (
+        "\n"
+        + ''
+          vim.api.nvim_create_autocmd("FocusGained", {
+            desc = "Sync gruvbox background with macOS appearance",
+            callback = sync_background_with_macos,
+          })
+        ''
+      );
       react-hooks-snippets =
         config.dotfiles.inputs.react-hooks-snippets.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
@@ -292,36 +326,12 @@ let
             })
           end
 
-          local function sync_background_with_macos()
-            local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
-            if not handle then
-              return
-            end
-
-            local appearance = handle:read("*a")
-            handle:close()
-
-            local background = appearance:match("Dark") and "dark" or "light"
-            if vim.o.background ~= background then
-              vim.o.background = background
-              vim.cmd.colorscheme("gruvbox")
-            end
-
-            apply_surface_overrides()
-          end
-
-          sync_background_with_macos()
-
+          ${appearanceInit}
           vim.api.nvim_create_autocmd("ColorScheme", {
             desc = "Keep popup surfaces aligned with the editor",
             callback = apply_surface_overrides,
           })
-
-          vim.api.nvim_create_autocmd("FocusGained", {
-            desc = "Sync gruvbox background with macOS appearance",
-            callback = sync_background_with_macos,
-          })
-
+          ${appearanceFocus}
           vim.keymap.set({ "i", "s" }, "<Tab>", function()
             local ok, luasnip = pcall(require, "luasnip")
             if ok and luasnip.expand_or_jumpable() then

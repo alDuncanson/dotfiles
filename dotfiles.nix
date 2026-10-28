@@ -4,6 +4,7 @@ let
   inherit (lib)
     attrNames
     attrValues
+    hasSuffix
     mapAttrs
     mapAttrsToList
     mkOption
@@ -33,7 +34,11 @@ let
 
         homeDirectory = mkOption {
           type = types.str;
-          default = "/Users/${config.userName}";
+          default =
+            if hasSuffix "darwin" config.system then
+              "/Users/${config.userName}"
+            else
+              "/home/${config.userName}";
         };
 
         modules = mkOption {
