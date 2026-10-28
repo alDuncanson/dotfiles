@@ -407,7 +407,7 @@ let
     };
 in
 {
-  dotfiles.home.shared =
+  dotfiles.home.modules.nvim =
     { pkgs, ... }:
     {
       programs.nvf = {

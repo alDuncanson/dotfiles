@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.ssh = {
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;

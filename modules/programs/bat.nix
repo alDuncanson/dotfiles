@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.bat = {
     programs.bat = {
       enable = true;
       config = {

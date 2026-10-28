@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared =
+  dotfiles.home.modules.zsh =
     { pkgs, ... }:
     {
       programs.zsh = {

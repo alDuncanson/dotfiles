@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.delta = {
     programs.delta = {
       enable = true;
       enableGitIntegration = true;

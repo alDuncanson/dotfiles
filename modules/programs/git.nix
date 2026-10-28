@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.git = {
     programs.git = {
       enable = true;
       signing = {

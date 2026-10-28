@@ -1,6 +1,6 @@
 { ... }:
 {
-  dotfiles.home.shared = {
+  dotfiles.home.modules.fonts = {
     fonts.fontconfig = {
       enable = true;
       defaultFonts = {

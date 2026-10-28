@@ -2,6 +2,8 @@ inputs:
 { lib, config, ... }:
 let
   inherit (lib)
+    attrNames
+    attrValues
     mapAttrs
     mapAttrsToList
     mkOption
@@ -34,6 +36,11 @@ let
           default = "/Users/${config.userName}";
         };
 
+        modules = mkOption {
+          type = types.listOf (types.enum (attrNames topConfig.dotfiles.home.modules));
+          default = attrNames topConfig.dotfiles.home.modules;
+        };
+
         homeModule = mkOption {
           type = types.deferredModule;
           default = { };
@@ -59,8 +66,9 @@ let
           };
         }
         config.dotfiles.home.shared
-        profile.homeModule
-      ];
+      ]
+      ++ map (name: config.dotfiles.home.modules.${name}) profile.modules
+      ++ [ profile.homeModule ];
     };
 
   canonicalHomes = mapAttrs (_: mkHomeConfiguration) config.dotfiles.profiles;
@@ -102,6 +110,11 @@ in
         type = types.deferredModule;
         default = { };
       };
+
+      modules = mkOption {
+        type = types.attrsOf types.deferredModule;
+        default = { };
+      };
     };
 
     profiles = mkOption {
@@ -130,6 +143,8 @@ in
 
     flake.homeConfigurations = canonicalHomes // aliasHomes;
 
-    flake.homeModules.default = config.dotfiles.home.shared;
+    flake.homeModules = config.dotfiles.home.modules // {
+      default.imports = [ config.dotfiles.home.shared ] ++ attrValues config.dotfiles.home.modules;
+    };
   };
 }
