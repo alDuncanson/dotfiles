@@ -3,7 +3,6 @@ let
   inherit (config.dotfiles) inputs;
   topConfig = config;
   homeModules = [
-    "ghostty"
     "lazygit"
     "nvim"
   ];
@@ -79,6 +78,8 @@ in
           programs.firefox.enable = true;
 
           environment.systemPackages = with pkgs; [
+            ghostty
+            htop
             git
             yazi
             ripgrep
@@ -91,6 +92,7 @@ in
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
+            backupFileExtension = "hm-backup";
             users.al = {
               imports = [
                 topConfig.dotfiles.home.shared
@@ -109,42 +111,64 @@ in
 
               dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
-              wayland.windowManager.sway =
-                let
-                  status = pkgs.writeShellScript "sway-status" ''
-                    while true; do
-                      battery=$(cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -n1)
-                      echo "''${battery:+bat $battery% | }$(date +'%a %b %-d %H:%M')"
-                      sleep 30
-                    done
-                  '';
-                in
-                {
-                  enable = true;
-                  package = null;
-                  config = {
-                    modifier = "Mod4";
-                    terminal = "ghostty";
-                    menu = "wmenu-run";
-                    defaultWorkspace = "workspace number 1";
-                    input."type:touchpad".tap = "enabled";
-                    bars = [
-                      {
-                        position = "top";
-                        statusCommand = "${status}";
-                      }
-                    ];
-                    keybindings = lib.mkOptionDefault {
-                      "Mod4+Shift+x" = "exec ${pkgs.swaylock}/bin/swaylock -f -c 000000";
-                      "XF86AudioRaiseVolume" = "exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+";
-                      "XF86AudioLowerVolume" = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
-                      "XF86AudioMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-                      "XF86MonBrightnessUp" = "exec brightnessctl set 5%+";
-                      "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
-                      "Print" = "exec grim -g \"$(slurp)\" - | wl-copy";
+              programs.i3status = {
+                enable = true;
+                enableDefault = false;
+                general.interval = 5;
+                modules = {
+                  "cpu_usage" = {
+                    position = 1;
+                    settings.format = "cpu %usage";
+                  };
+                  "memory" = {
+                    position = 2;
+                    settings.format = "mem %used / %total";
+                  };
+                  "battery all" = {
+                    position = 3;
+                    settings = {
+                      format = "%status %percentage %remaining";
+                      format_down = "no battery";
+                      integer_battery_capacity = true;
+                      status_chr = "chr";
+                      status_bat = "bat";
+                      status_unk = "bat";
+                      status_full = "full";
                     };
                   };
+                  "tztime local" = {
+                    position = 4;
+                    settings.format = "%a %b %-d %H:%M";
+                  };
                 };
+              };
+
+              wayland.windowManager.sway = {
+                enable = true;
+                package = null;
+                config = {
+                  modifier = "Mod4";
+                  terminal = "ghostty";
+                  menu = "wmenu-run";
+                  defaultWorkspace = "workspace number 1";
+                  input."type:touchpad".tap = "enabled";
+                  bars = [
+                    {
+                      position = "top";
+                      statusCommand = "${pkgs.i3status}/bin/i3status";
+                    }
+                  ];
+                  keybindings = lib.mkOptionDefault {
+                    "Mod4+Shift+x" = "exec ${pkgs.swaylock}/bin/swaylock -f -c 000000";
+                    "XF86AudioRaiseVolume" = "exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+";
+                    "XF86AudioLowerVolume" = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+                    "XF86AudioMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+                    "XF86MonBrightnessUp" = "exec brightnessctl set 5%+";
+                    "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+                    "Print" = "exec grim -g \"$(slurp)\" - | wl-copy";
+                  };
+                };
+              };
 
               services.swayidle = {
                 enable = true;
