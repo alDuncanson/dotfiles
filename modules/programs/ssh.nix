@@ -1,34 +1,36 @@
 { ... }:
 {
-  dotfiles.home.modules.ssh = {
-    programs.ssh = {
-      enable = true;
-      enableDefaultConfig = false;
-      settings = {
-        "github.com" = {
-          IdentityFile = "~/.ssh/github_auth";
-          IdentitiesOnly = true;
-          AddKeysToAgent = "yes";
-          UseKeychain = "yes";
-        };
-        zion = {
-          HostName = "136.65.217.225";
-          User = "alduncanson";
-          IdentityFile = "~/.ssh/zion";
-          IdentitiesOnly = true;
+  dotfiles.home.modules.ssh =
+    { lib, pkgs, ... }:
+    {
+      programs.ssh = {
+        enable = true;
+        enableDefaultConfig = false;
+        settings = {
+          "github.com" = {
+            IdentityFile = "~/.ssh/github_auth";
+            IdentitiesOnly = true;
+            AddKeysToAgent = "yes";
+          }
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin { UseKeychain = "yes"; };
+          zion = {
+            HostName = "136.65.217.225";
+            User = "alduncanson";
+            IdentityFile = "~/.ssh/zion";
+            IdentitiesOnly = true;
+          };
         };
       };
-    };
 
-    launchd.agents.ssh-add-keychain = {
-      enable = true;
-      config = {
-        ProgramArguments = [
-          "/usr/bin/ssh-add"
-          "--apple-load-keychain"
-        ];
-        RunAtLoad = true;
+      launchd.agents.ssh-add-keychain = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "/usr/bin/ssh-add"
+            "--apple-load-keychain"
+          ];
+          RunAtLoad = true;
+        };
       };
     };
-  };
 }

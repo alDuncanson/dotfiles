@@ -31,6 +31,10 @@
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ dotfiles ];
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+      ];
       flake.flakeModules.default = dotfiles;
 
       dotfiles.profiles.personal = {
