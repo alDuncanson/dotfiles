@@ -11,7 +11,7 @@ in
 {
   flake.nixosConfigurations.thinkpad = inputs.nixpkgs.lib.nixosSystem {
     modules = [
-      ../../hosts/thinkpad/hardware-configuration.nix
+      ./hardware-configuration.nix
       inputs.home-manager.nixosModules.home-manager
       (
         { pkgs, ... }:
