@@ -410,6 +410,8 @@ in
   dotfiles.home.modules.nvim =
     { pkgs, ... }:
     {
+      imports = [ config.dotfiles.inputs.nvf.homeManagerModules.default ];
+
       programs.nvf = {
         enable = true;
         settings = mkNvfSettings pkgs;
