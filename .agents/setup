@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+step() {
+  local start=$SECONDS
+  echo "==> $*"
+  "$@"
+  echo "<== done in $((SECONDS - start))s"
+}
+
+system="$(nix eval --raw --impure --expr builtins.currentSystem)"
+
+step nix flake archive
+step nix build --no-link --print-out-paths \
+  ".#formatter.$system" \
+  ".#packages.$system.neovim"
