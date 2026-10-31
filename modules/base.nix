@@ -38,7 +38,7 @@
           docker
           podman
           podman-compose
-          terraform
+          opentofu
           act
         ];
 
