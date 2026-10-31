@@ -72,10 +72,7 @@ let
           enableTreesitter = true;
           enableFormat = true;
           bash.enable = true;
-          hcl = {
-            enable = true;
-            lsp.servers = [ "terraform-ls" ];
-          };
+          hcl.enable = true;
           helm.enable = true;
           html.enable = true;
           json.enable = true;
@@ -101,11 +98,7 @@ let
             extraDiagnostics.enable = false;
           };
           rust.enable = true;
-          terraform = {
-            enable = true;
-            lsp.servers = [ "terraform-ls" ];
-            format.type = [ "terraform" ];
-          };
+          terraform.enable = true;
           toml.enable = true;
           yaml.enable = true;
         };
