@@ -10,6 +10,7 @@
         allowedSigners = ''
           alDuncanson@proton.me namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAyKVkMKiF3nuqzzuYwCVYYjGXMb3cdRTrem9ON44mMd mac signing
           alDuncanson@proton.me namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP5bPFGOY9ITCuFnt4f1Es8HD6xgdvJqoFf0LFN2SO6P work mac github signing
+          alDuncanson@proton.me namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFsTBS+/L3NHgMBPC+cCoRCljm76aJrpg+gfEONY6n3Z thinkpad signing
         '';
       };
       settings = {

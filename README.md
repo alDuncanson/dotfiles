@@ -43,8 +43,8 @@ modules from `homeModules.<name>`, or all of them from `homeModules.default`.
 
 ## Hosts
 
-- `thinkpad`: NixOS on a ThinkPad 13 with Sway, ghostty, Firefox, and the `nvim`
-  module
+- `thinkpad`: NixOS on a ThinkPad 13 with Sway, ghostty, Firefox, and the `gh`,
+  `git`, `lazygit`, `nvim`, and `ssh` modules
 
 ```bash
 sudo nixos-rebuild switch --flake .#thinkpad

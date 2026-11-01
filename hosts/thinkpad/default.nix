@@ -3,8 +3,11 @@ let
   inherit (config.dotfiles) inputs;
   topConfig = config;
   homeModules = [
+    "gh"
+    "git"
     "lazygit"
     "nvim"
+    "ssh"
   ];
 in
 {
@@ -76,6 +79,7 @@ in
           };
 
           programs.firefox.enable = true;
+          programs.ssh.startAgent = true;
 
           environment.systemPackages = with pkgs; [
             ghostty
@@ -101,13 +105,7 @@ in
 
               home.stateVersion = topConfig.dotfiles.home.stateVersion;
 
-              programs.git = {
-                enable = true;
-                settings.user = {
-                  name = "Al Duncanson";
-                  email = "alDuncanson@proton.me";
-                };
-              };
+              programs.git.settings.user.email = "alDuncanson@proton.me";
 
               dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
