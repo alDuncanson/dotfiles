@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 {
   dotfiles.home.modules.git = {
     programs.git = {
@@ -15,6 +15,7 @@
       };
       settings = {
         user.name = "Al Duncanson";
+        user.email = lib.mkDefault "alDuncanson@proton.me";
         diff.submodule = "log";
         fetch.prune = true;
         init.defaultBranch = "main";

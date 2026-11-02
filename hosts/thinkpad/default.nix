@@ -112,8 +112,6 @@ in
 
               home.stateVersion = topConfig.dotfiles.home.stateVersion;
 
-              programs.git.settings.user.email = "alDuncanson@proton.me";
-
               dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
               programs.i3status = {
