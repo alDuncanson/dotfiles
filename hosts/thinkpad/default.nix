@@ -18,7 +18,8 @@ in
       (
         { pkgs, ... }:
         {
-          nixpkgs.config.allowUnfree = true;
+          nixpkgs.config = topConfig.dotfiles.nixpkgs.config;
+          nixpkgs.overlays = topConfig.dotfiles.nixpkgs.overlays;
 
           boot.loader.systemd-boot.enable = true;
           boot.loader.systemd-boot.configurationLimit = 10;

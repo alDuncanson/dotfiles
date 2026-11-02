@@ -104,6 +104,18 @@ in
       readOnly = true;
     };
 
+    nixpkgs = {
+      config = mkOption {
+        type = types.attrsOf types.raw;
+        default = { };
+      };
+
+      overlays = mkOption {
+        type = types.listOf types.raw;
+        default = [ ];
+      };
+    };
+
     home = {
       stateVersion = mkOption {
         type = types.str;
@@ -138,11 +150,13 @@ in
         _module.args.pkgs = config.dotfiles.lib.mkPkgs system;
       };
 
+    dotfiles.nixpkgs.config.allowUnfree = true;
+
     dotfiles.lib.mkPkgs =
       system:
       import inputs.nixpkgs {
         inherit system;
-        config.allowUnfree = true;
+        inherit (config.dotfiles.nixpkgs) config overlays;
       };
 
     flake.homeConfigurations = canonicalHomes // aliasHomes;
