@@ -1,7 +1,7 @@
 { ... }:
 {
   dotfiles.home.modules.zsh =
-    { pkgs, ... }:
+    { lib, pkgs, ... }:
     {
       home.shell.enableZshIntegration = true;
 
@@ -11,10 +11,11 @@
         syntaxHighlighting.enable = true;
         initContent = ''
           vivid_theme="gruvbox-light"
-          if defaults read -g AppleInterfaceStyle >/dev/null 2>&1; then
-            vivid_theme="gruvbox-dark"
-          fi
-
+          ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
+            if defaults read -g AppleInterfaceStyle >/dev/null 2>&1; then
+              vivid_theme="gruvbox-dark"
+            fi
+          ''}
           export BAT_THEME="$vivid_theme"
           export LS_COLORS="$(${pkgs.vivid}/bin/vivid generate "$vivid_theme")"
         '';
