@@ -9,6 +9,7 @@ in
     system = "x86_64-linux";
     userName = "al";
     modules = [
+      "cli"
       "gh"
       "git"
       "lazygit"
@@ -64,11 +65,6 @@ in
 
           environment.systemPackages = with pkgs; [
             ghostty
-            htop
-            git
-            yazi
-            ripgrep
-            fd
             amp-cli
           ];
 
