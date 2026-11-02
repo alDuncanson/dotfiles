@@ -1,32 +1,17 @@
 { ... }:
 {
-  dotfiles.home.modules.base =
+  dotfiles.home.modules.dev =
     { pkgs, ... }:
     {
       home = {
         packages = with pkgs; [
-          htop
-          eza
-          fd
-          git
-          wget
-          hyperfine
-          tree
           lua
           go
-          fastfetch
-          ripgrep
-          yazi
-          glow
           biome
           nodejs
           bun
           rustup
           gh
-          jq
-          yq
-          just
-          herdr
           python3
           awscli2
           vscode-langservers-extracted
@@ -43,18 +28,12 @@
         ];
 
         sessionPath = [
-          "$HOME/.local/bin"
           "$HOME/google-cloud-sdk/bin"
           "$HOME/.npm-global/bin"
           "$HOME/go/bin"
         ];
 
-        sessionVariables = {
-          EDITOR = "nvim";
-          NPM_CONFIG_PREFIX = "$HOME/.npm-global";
-        };
-
-        shell.enableZshIntegration = true;
+        sessionVariables.NPM_CONFIG_PREFIX = "$HOME/.npm-global";
       };
     };
 }

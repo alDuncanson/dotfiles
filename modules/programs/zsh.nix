@@ -3,6 +3,8 @@
   dotfiles.home.modules.zsh =
     { pkgs, ... }:
     {
+      home.shell.enableZshIntegration = true;
+
       programs.zsh = {
         enable = true;
         autosuggestion.enable = true;
