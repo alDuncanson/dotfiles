@@ -161,6 +161,11 @@ in
       type = types.attrsOf profileType;
       default = { };
     };
+
+    nixos.modules = mkOption {
+      type = types.attrsOf types.deferredModule;
+      default = { };
+    };
   };
 
   config = {
@@ -179,6 +184,8 @@ in
     dotfiles.lib.mkPkgs = system: pkgsFor.${system} or (importNixpkgs system);
 
     flake.homeConfigurations = canonicalHomes // aliasHomes;
+
+    flake.nixosModules = config.dotfiles.nixos.modules;
 
     flake.homeModules = config.dotfiles.home.modules // {
       default.imports = [ config.dotfiles.home.shared ] ++ attrValues config.dotfiles.home.modules;
