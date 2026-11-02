@@ -80,7 +80,7 @@ let
   aliasHomes = builtins.listToAttrs (
     lib.concatLists (
       mapAttrsToList (
-        _: profile: builtins.map (alias: nameValuePair alias (mkHomeConfiguration profile)) profile.aliases
+        name: profile: map (alias: nameValuePair alias canonicalHomes.${name}) profile.aliases
       ) config.dotfiles.profiles
     )
   );
