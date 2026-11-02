@@ -54,6 +54,17 @@ let
     }
   );
 
+  importNixpkgs =
+    system:
+    import inputs.nixpkgs {
+      inherit system;
+      inherit (config.dotfiles.nixpkgs) config overlays;
+    };
+
+  pkgsFor = lib.genAttrs (lib.unique (
+    config.systems ++ map (profile: profile.system) (attrValues config.dotfiles.profiles)
+  )) importNixpkgs;
+
   mkHomeConfiguration =
     profile:
     let
@@ -152,12 +163,7 @@ in
 
     dotfiles.nixpkgs.config.allowUnfree = true;
 
-    dotfiles.lib.mkPkgs =
-      system:
-      import inputs.nixpkgs {
-        inherit system;
-        inherit (config.dotfiles.nixpkgs) config overlays;
-      };
+    dotfiles.lib.mkPkgs = system: pkgsFor.${system} or (importNixpkgs system);
 
     flake.homeConfigurations = canonicalHomes // aliasHomes;
 
