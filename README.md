@@ -9,10 +9,11 @@ files, so every machine matches and every change is a commit.
 
 ## Profiles
 
-- `personal` with alias `al`
+- `personal` with alias `al`: the Mac
+- `thinkpad`: the user environment of the NixOS host below
 
-Every file under `modules/` is an opt-in module, such as `nvim`, `ghostty`, or
-`zsh`. A profile gets all of them unless it lists the ones it wants in
+Every file under `modules/` is an opt-in module, such as `cli`, `dev`, `nvim`,
+or `zsh`. A profile gets all of them unless it lists the ones it wants in
 `modules`.
 
 `nix run home-manager -- switch --flake .` resolves via the alias on each
@@ -40,11 +41,16 @@ The flake module closes over this flake's inputs, so that flake needs only:
 
 Hosts that compose the user environment themselves can import individual
 modules from `homeModules.<name>`, or all of them from `homeModules.default`.
+NixOS modules such as the `sway` session export as `nixosModules.<name>`.
 
 ## Hosts
 
-- `thinkpad`: NixOS on a ThinkPad 13 with Sway, ghostty, Firefox, and the `gh`,
-  `git`, `lazygit`, `nvim`, and `ssh` modules
+- `thinkpad`: NixOS on a ThinkPad 13 with the `sway` session, ghostty, Firefox,
+  and the `thinkpad` profile: the `cli`, `gh`, `git`, `lazygit`, `nvim`, and
+  `ssh` modules
+
+A host declares its profile and imports `profiles.<name>.homeModules` into
+Home Manager, so the same list builds standalone and on the host.
 
 ```bash
 sudo nixos-rebuild switch --flake .#thinkpad
