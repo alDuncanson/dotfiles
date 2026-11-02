@@ -1,8 +1,13 @@
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  self,
+  ...
+}:
 let
   topConfig = config;
   inherit (lib) filterAttrs mapAttrs' nameValuePair;
-  src = ../.;
+  src = self.outPath;
 in
 {
   perSystem =
