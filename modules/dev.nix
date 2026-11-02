@@ -21,14 +21,11 @@
           kubectl
           kubernetes-helm
           docker
-          podman
-          podman-compose
           opentofu
           act
         ];
 
         sessionPath = [
-          "$HOME/google-cloud-sdk/bin"
           "$HOME/.npm-global/bin"
           "$HOME/go/bin"
         ];
