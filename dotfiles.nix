@@ -50,6 +50,22 @@ let
           type = types.deferredModule;
           default = { };
         };
+
+        stateVersion = mkOption {
+          type = types.str;
+          default = topConfig.dotfiles.home.stateVersion;
+        };
+
+        homeModules = mkOption {
+          type = types.listOf types.deferredModule;
+          readOnly = true;
+          default = [
+            { home.stateVersion = config.stateVersion; }
+            topConfig.dotfiles.home.shared
+          ]
+          ++ map (name: topConfig.dotfiles.home.modules.${name}) config.modules
+          ++ [ config.homeModule ];
+        };
       };
     }
   );
@@ -77,13 +93,10 @@ let
           home = {
             username = profile.userName;
             homeDirectory = profile.homeDirectory;
-            stateVersion = config.dotfiles.home.stateVersion;
           };
         }
-        config.dotfiles.home.shared
       ]
-      ++ map (name: config.dotfiles.home.modules.${name}) profile.modules
-      ++ [ profile.homeModule ];
+      ++ profile.homeModules;
     };
 
   canonicalHomes = mapAttrs (_: mkHomeConfiguration) config.dotfiles.profiles;
