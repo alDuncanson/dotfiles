@@ -13,16 +13,11 @@
           rustup
           gh
           python3
-          awscli2
           vscode-langservers-extracted
           uv
           ruff
           ty
-          kubectl
-          kubernetes-helm
-          docker
           opentofu
-          act
         ];
 
         sessionPath = [

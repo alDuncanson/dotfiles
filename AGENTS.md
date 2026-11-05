@@ -16,7 +16,7 @@ Home Manager, and NixOS hosts.
 - `profiles.<name>.homeModules` is the read-only list that build consumes. A NixOS host imports the same list into `home-manager.users.<user>`, so the standalone and NixOS builds of a profile cannot drift; `hosts/thinkpad` is the pattern
 - `dotfiles.nixpkgs.config` and `dotfiles.nixpkgs.overlays` feed every nixpkgs instance: `perSystem`, every profile, and hosts that set `nixpkgs.config` and `nixpkgs.overlays` from them. A flake importing the module patches a package there, not with `lib.hiPrio`
 - Profiles take every home module by default, so platform-specific config does not belong in `dotfiles.home.modules`. A desktop session is a `dotfiles.nixos.modules` entry plus the host's `home.nix`
-- `cli` holds shell tools every machine wants; `dev` holds language, cloud, and container toolchains. Tools only one machine needs live in that machine's flake
+- `cli` holds shell tools every machine wants; `dev` holds language toolchains. Tools only one machine needs live in that machine's flake
 
 ## Commands
 
