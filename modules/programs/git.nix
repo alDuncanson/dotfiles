@@ -3,6 +3,10 @@
   dotfiles.home.modules.git = {
     programs.git = {
       enable = true;
+      ignores = [
+        ".DS_Store"
+        "**/.claude/settings.local.json"
+      ];
       signing = {
         format = "ssh";
         key = "~/.ssh/github_signing.pub";
