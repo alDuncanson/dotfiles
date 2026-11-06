@@ -13,6 +13,7 @@ in
       "gh"
       "git"
       "lazygit"
+      "nix"
       "nvim"
       "ssh"
     ];
