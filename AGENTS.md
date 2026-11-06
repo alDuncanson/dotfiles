@@ -18,6 +18,7 @@ Home Manager, and NixOS hosts.
 - Profiles take every home module by default, so platform-specific config does not belong in `dotfiles.home.modules`. A desktop session is a `dotfiles.nixos.modules` entry plus the host's `home.nix`
 - `cli` holds shell tools every machine wants; `dev` holds language toolchains. Tools only one machine needs live in that machine's flake
 - `nix` pins the `nixpkgs` registry entry and `NIX_PATH` to the locked nixpkgs, so `nix shell nixpkgs#x` and `nix-shell -p x` reuse the store paths the profile already has instead of fetching whatever the global registry points at. On darwin it also collects garbage weekly, dropping generations older than 14 days, because nothing else does there; NixOS hosts collect at the system level. The collector's arguments are forced on the launchd agent rather than set through `nix.gc.options`, because Home Manager hands that string to `nix-collect-garbage` as a single argument on darwin and the collector rejects it
+- `apps` copies macOS app bundles into `~/Applications/Home Manager Apps` instead of symlinking them, so Launch Services tags the copy rather than the store path. A tagged store path cannot be deleted by the daemon, which aborts garbage collection on it. The first switch after enabling asks for the App Management permission for the terminal; copies are also visible to Spotlight
 
 ## Commands
 
