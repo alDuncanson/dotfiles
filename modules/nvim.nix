@@ -133,6 +133,7 @@ let
           };
         };
         autocomplete.blink-cmp.enable = true;
+        pluginOverrides.blink-cmp = pkgs.vimPlugins.blink-cmp;
         # LuaSnip needs jsregexp for VS Code-style snippet transforms
         # (e.g. the capitalized setter mirror in useState).
         luaPackages = [ "jsregexp" ];

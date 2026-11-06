@@ -42,7 +42,9 @@ Home Manager, and NixOS hosts.
 
 `modules/nvim.nix` holds the nvf settings and the exported `.#neovim` package.
 Both build through `dotfiles.lib.mkPkgs`, so unfree packages are allowed there,
-not in a module. To check an nvf option against the pinned source:
+not in a module. blink-cmp comes from nixpkgs through `vim.pluginOverrides`: nvf's own
+package compiles its Rust matcher on every machine, and nixpkgs ships the same
+version prebuilt. To check an nvf option against the pinned source:
 
 ```bash
 nix eval --impure --raw --expr 'let flake = builtins.getFlake (toString ./.); in flake.inputs.nvf.outPath'
