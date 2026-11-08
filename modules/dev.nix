@@ -26,6 +26,11 @@
         ];
 
         sessionVariables.NPM_CONFIG_PREFIX = "$HOME/.npm-global";
+
+        file.".npm-global/etc/npmrc".text = ''
+          ignore-scripts=true
+          min-release-age=7
+        '';
       };
     };
 }
